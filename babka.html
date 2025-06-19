@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Симулятор Бабки Нинки</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #4a3d3d; 
+            background-image: url('data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23332a2a" fill-opacity="0.4"%3E%3Cpath d="M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c-5.523 0-10-4.477-10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c-5.523 0-10-4.477-10-10z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
+        }
+        .font-lobster {
+            font-family: 'Lobster', cursive;
+        }
+        .game-container {
+            background-color: #fff8f0;
+            border: 4px solid #5a4a6b;
+            transition: transform 0.1s ease-in-out;
+        }
+        .shake-animation {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .action-button:active {
+            transform: translateY(2px);
+            border-bottom-width: 2px;
+        }
+        .inventory-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .inventory-item:hover {
+            background-color: #eaddd0;
+        }
+        #screamer-modal {
+            animation-iteration-count: 5;
+        }
+        #screamer-image {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="game-wrapper" class="w-full max-w-5xl">
+        <div id="game-container" class="game-container rounded-2xl shadow-2xl p-6 md:p-8 transform rotate-[-1deg]">
+            <div class="transform rotate-[1deg]">
+                <!-- Заголовок -->
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl md:text-5xl font-lobster text-red-700">Симулятор Бабки Нинки</h1>
+                    <p id="time-display" class="text-xl text-gray-800 mt-2 font-semibold">День 1, 08:00</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Левая колонка: Спрайт, Статистика, Инвентарь -->
+                    <div class="lg:col-span-1 flex flex-col items-center bg-[#f3e9dc] p-4 rounded-lg border-2 border-[#d4c4b0] space-y-4">
+                        <h2 class="text-2xl font-bold text-gray-700">Баба Нина</h2>
+                        <img id="nina-sprite" src="https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg" 
+                             onerror="this.onerror=null;this.src='https://placehold.co/200x200/d1c4e9/5a4a6b?text=Баба+Нина';"
+                             alt="Изображение Бабы Нины" class="w-48 h-48 rounded-full object-cover shadow-lg border-4 border-white">
+                        
+                        <div class="w-full space-y-3 text-lg">
+                            <div><span>❤️</span> <strong>Энергия:</strong> <span id="energy-val">100</span></div>
+                            <div><span>멘</span> <strong>Настроение:</strong> <span id="mood-val">70</span></div>
+                            <div><span>🍲</span> <strong>Сытость:</strong> <span id="hunger-val">80</span></div>
+                            <div><span>💰</span> <strong>Лавэ:</strong> <span id="money-val">5000</span> руб.</div>
+                        </div>
+
+                        <div class="w-full mt-4 pt-4 border-t-2 border-[#d4c4b0]">
+                            <h3 class="text-xl font-bold text-center text-gray-700 mb-2">Хабар</h3>
+                            <div id="inventory-list" class="bg-white p-2 rounded border border-gray-300 h-24 overflow-y-auto">
+                                <p class="text-gray-500 text-center">Пусто, как в башке у Серёги</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Правая колонка: Сообщения и Действия -->
+                    <div class="lg:col-span-2 flex flex-col">
+                        <div id="message-box" class="flex-grow bg-white p-4 rounded-lg border-2 border-gray-300 h-64 mb-6 overflow-y-auto shadow-inner">
+                            <p class="text-gray-700">падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂</p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-700 mb-3 text-center">Чё делать-то будем, ёпта?</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                <button onclick="performAction('cook')" class="action-button bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-green-800">Сварганить жратву</button>
+                                <button onclick="performAction('sleep')" class="action-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-blue-800">Завалиться спать</button>
+                                <button onclick="performAction('watch_tv')" class="action-button bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-purple-800">Пялиться в телек</button>
+                                <button onclick="performAction('monetka')" class="action-button bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-orange-700">Сгонять в 'Монетку'</button>
+                                <button onclick="performAction('gossip')" class="action-button bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-pink-700">Потрещать с Тимофеевной</button>
+                                <button onclick="performAction('tiktok')" class="action-button bg-black hover:bg-gray-800 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-gray-900">Записать видос в ТекТок</button>
+                                <button onclick="performAction('stream')" class="action-button bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-2 rounded-lg border-b-4 border-red-800">Запустить стрим</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно скримера -->
+    <div id="screamer-modal" class="hidden fixed inset-0 bg-black z-50 flex items-center justify-center">
+        <img id="screamer-image" src="https://zaebizwear.com/pidor/photo_2025-03-27_15-37-50.jpg" 
+             onerror="this.onerror=null;this.src='https://placehold.co/600x600/000/fff?text=SCREAMER_ERROR';"/>
+    </div>
+    
+    <!-- Модальное окно окончания игры -->
+    <div id="game-over-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40">
+        <div class="bg-white p-8 rounded-lg text-center shadow-xl">
+            <h2 id="game-over-title" class="text-3xl font-bold mb-4">Ну всё, пиздец</h2>
+            <p id="game-over-message" class="text-lg mb-6">Короче, ты отъехала.</p>
+            <button onclick="restartGame()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">По новой, блядь!</button>
+        </div>
+    </div>
+    
+    <!-- Аудио -->
+    <audio id="bg-music" src="https://www.myinstants.com/media/sounds/muzykalnyi-perdiozh.mp3" loop></audio>
+    <audio id="sfx-player"></audio>
+
+<script>
+    const PHRASES = {
+        wake_up: [
+            "падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂", "какова хрена так рана ⏰⏰⏰ апять этат будильник ебучий арёт 🤬🤬🤬",
+            "так фстали атряхнулись и пашли наху... тоесть па дилам 🚶‍♀️🚶‍♀️🚶‍♀️🤣🤣", "снова утра 🌅🌅 сдохнутьбы да пенсию нада палучить 💸💸👍",
+            "глаза прадрала а спина ни разгибаеца 👵👵👵 старость ни радасть а пиздес 😫😫😅", "кто я?? где я?? 🧐🧐 а я старая бабка в сваей халупе. заибись. 😂👍",
+            "сонце в ибало светит ☀️😎😎 занавески нада была платнее задернуть 😡😡", "ищо адин день в этам дурдоме 🤪🤪 ну с богом или с чортом похуй 🙏😈🤣",
+            "хочица лижать и пливать в паталок 💦💦 но нада итти и виршить виликие дила. например пасрать. 🚽💩😂", "праснулась но ни ачнулась 😵‍💫😵‍💫 дайте водки 🍶🍶 плиз 🙏😂"
+        ],
+        cook: [
+            "ща сварганю хрючива штоб ни сдохнуть 🍲🍲 пельмени - пища багов 🥟🥟🤣🤣", "так где мая кастрюля?? 🍳🍳 хто спиздил маю каструлю?! 😡 а вот ана. будем варить суп из тапара и крепкава словца 🥣💪😂",
+            "жрать захателась аж в глазах патимнело 👀👀 время для кулинарнава изнасилавния халадильника 🤪🤪", "шо у нас тут? прашлогодний агурец и дохлая мыш 🥒🐭 пайдёть 👍👍😂😂",
+            "магу сварить кашу из ничиво 🥣🥣 и будит вкусна патамушта я галодная как сабака 🐕🐕🤤🤤", "маи катлеты могут убить 🥩💀 в прямом смысле. но я их люблю 🥰🥰😅",
+            "гатовка - эта как секс. нада многа двигаца и громка станать от усталасти 🥵🥵🤣🤣🤣", "пахнет вкусна?? эта я лук жарю 🧅🧅 или у миня апять инсульть 🤪🤪🤪",
+            "завтрак чимпиона: вчирашний чай и пазавчирашний хлеб ☕🍞 божествина 😇😇👍", "если ида упала на пол у миня есть 5 сикунд штобы иё паднять. и 5 часов штобы съесть 🤣🤣🤣👍"
+        ],
+        sleep: [
+            "вырубилась до утра 😴😴 галава чугунная но хоть силы есть 💪💪😅", "фсё на бакавую 🛌🛌 если серёга ночю насрёт пад двер - убю 🔪🔪😡",
+            "завалилась спать 😴😴 пусь мне присница пенсия и дохлый депутат 💸💸💀😂😂", "хррр... пшшш... 💤💤 эта я сплю. или умираю. утрам разбирёмся 🤔🤔🤣🤣",
+            "сон для слабаков 💪💪 а я очин сильная но паспать всё равно нада 😴😴", "мне приснилась што я маладая и красивая 👸👸 праснулась в халодном пату 😰😰😂",
+            "ва сне я литала 🕊️🕊️ а патом упала с кравати 🤕🤕 больна сука 🤬🤬", "мой храп можит разбудить мёртвых 🧟‍♂️🧟‍♂️ и саседей. асобина саседей 📢📢🤣",
+            "если я ни пасплю 8 чисов я привращаюсь в мигеру 👹👹 а если пасплю - тоже 🤪🤪", "сплю в абнимку с тапаром 🪓🪓 на всякий случай 😏😏"
+        ],
+        watch_tv: [
+            "фключаем зомбаящик 📺📺 о 'давай паженимся'! старые бляди ищут сибе дедаф-алкашей. класика 👍👍🤣🤣", "шо там па навастям? 🧐🧐 апять пиздят как дышат 🤥🤥 выключай нахуй эту прапаганду 🤬🤬",
+            "ооо 'след' 👣👣 этих пидаров ищо ни закрыли? ладна пасметрим как они там трупы патрашат 🔪💀😂", "риклама стиральнава парашка 🧼🧼 как будто мне есть шо стирать кроме старых трусоф 🩲🩲�🤣",
+            "малахав апять кавота с кемта мирит 👨‍⚖️👨‍⚖️ да пусть они друг друга паубивают так интиреснее будит 🍿🍿", "сматрю прагноз пагоды ☀️🌧️ завтра абищают пиздес. как и вчира и сиводня 🤷‍♀️🤷‍♀️",
+            "сириал пра ментоф 👮‍♂️👮‍♂️ все такие чесные аж ташнит 🤢🤢 в жизнибы так 😂😂", "паказывают канцерт кабзона 🎤🎤 он ищо живой?? или эта запись с таво света?? 👻👻🤔",
+            "пульт где?? 🧐🧐 хто праибал пульт?! а я на ньом сижу 🍑🍑🤣🤣", "на икране ачиридная гаварящая галава 🗣️🗣️ лучшебы жопу паказали 🍑🍑😂😂"
+        ],
+        monetka: [
+            "папиздила в 'манетку' 🛒🛒 нада взять 'балтики' и кильки в тамате а то жизнь - гавно 🍺🐟👎", "надабы затарица хавчикам 🛍️🛍️ надеюсь касирша сиводня ни будит тупить как пропка 🤦‍♀️🤦‍♀️",
+            "сганяю в магазін пака всю пенсию ни праибала на хуйню всякую 💸💸🤪", "очиридь как в мавзалей 🧍‍♀️🧍‍♂️🧍‍♀️🧍‍♂️ што блять бисплатна раздают?? 🤔🤔",
+            "эта сука на касе апять здачу зажала 😡😡 да штоп у нийо руки атсохли 🙏🙏", "купила калбасу па акции 🌭🌭 надеюсь ана ни из туалетнай бумаги 🧻🧻🤣🤣",
+            "сумки тижолые как мая жизнь 👜👜😩 нада была тилежку брать 🛒🛒", "прадавец-кансультант? 🤔 он сам ни знаит где шо лежит уёбак 🤬🤬",
+            "цены растут быстрее чем грибы после даждя 🍄🍄📈 скора придёца святым духам питаца 😇😇", "взяла пакет. типерь я багачка 🤑🤑 магу сибе пазволить 👍👍"
+        ],
+        gossip: [
+            "пайду патрещу с тимафеевной старой перечницей 👵🌶️ узнаю хто с кем спит и хто шо украл 😏😏", "тимафеевна выхади подлая душа!! 🗣️🗣️ есть разгавор. нада кости пиримыть всиму падьезду 🦴🦴😂",
+            "ща эта карга мне апять будит пра сваи балячки заливать 🤧🤒 ну ладна паслушаю хули делать 🤷‍♀️🤷‍♀️", "абсудили с тимафеевной праститутку с третива этажа 💃💃 гаварит цены падняла. савсем ахуела 🤬🤬",
+            "тимафеевна видила как серёга ночю мусар вынасил 🗑️🗑️ в трусах. навернае апять пад чюто двер срать хадил 💩💩🤣", "гаварит у чисткова новый ухажор 👮‍♂️❤️‍🔥 интиресна хто этат нисчасный?? 🤔🤔",
+            "сплетни - эта как семечки 🌻🌻 начнёш - ни астановишся 🤪🤪", "мы с тимафеевной - меснае фсб 🕵️‍♀️🕵️‍♀️ знаем фсё пра фсех 💪💪",
+            "пиримыли кости фсем каму можна. и каму нельзя - тоже 👍👍😂😂", "после разгавора с тимафеевной хочица пайти и памыца 🚿🚿 но зато весела 🤣🤣"
+        ],
+        tiktok: [
+            "время для тектока! 💃💃 ща пакажу маладьожи как нада жопай тристи! 🍑🍑", "снимаю видос как я ругаюсь на правитильства 🗣️🤬 надеюсь ни пасадят старую 👵🙏",
+            "записываю ачиридной шидевр 🎬🎬 я звизда а вы все - гавно! 🌟💩", "танцую пад маргенштерна 🎶🎶 штоп он сдох урод 💀💀",
+            "делаю апзор на прасрочиную калбасу 🌭🤢 будит хить 👍👍", "паказываю как правильна ругаца 🗣️🤬 учу маладьож жить 💪💪",
+            "мой акаунт в тектоке папулярнее чем иисус. навернае. 🙏🤣", "снимаю липсинк на речи путина 👨‍⚖️🗣️ палучаеца смишно и страшна 😂😨",
+            "нада бы хайпануть 🚀🚀 может галышом сплясать? 💃🔞", "маи видосы - эта искуства 🎨🎨 а хто ни сагласен - тот пидарас 👍👍"
+        ],
+        stream: [
+            "ВРУБАЮ СТРИМ! 🔴 ща данаты палетят 💸💸 гатовьте бабки нищеброды! 🤑🤑", "привет маи патпищики-далбаёбы! 👋👋 бапка в эфире кидайте маниту! 🪙🪙",
+            "начинаим трансляцыю из маиво бапкина бункера  bunkers 벙커. задавайте вапросы суки 🧐🗣️", "хто ни заданатит - тот лох. и серёга. 👍👍",
+            "сабираю на новую вставную челюсь 🦷🦷 и на пива 🍺 кидайте бапки ни жмотьтесь 🙏🙏", "атвичаю на ваши тупые вапросы 🤔 да я старая. нет я ни скора сдохну 👵💪",
+            "за данат в 1000 рублей пакажу сваю кошку 🐈🐈 за 5000 - станцую 💃💃", "этат стрим изминит вашу жизнь 🙏🙏 вы паймёте што вы - ничтожиства 💩💩",
+            "спасиба за данат урод 👍💸 куплю сибе на них гроб ⚰️. шучу. куплю водки 🍶🤣", "кантент падъехал 🚚🚚 сматрите и ахуивайте 👀👀"
+        ],
+        no_money: [
+            "бабок нет! 😥 голяк! жди пенсию 👵", "деньги кончились блять! 😭 придёца сасать лапу 🐾🐾", "нищета ибаная! 🤬🤬 где маё лавэ? 💸💸",
+            "в кармане - вошь на аркане. и то дохлая 🦗🦗", "нада бы аграбить банк 🏦💰 но лень 😴😴", "магу прадать почку. или душу. што дароже? 🤔🤔",
+            "денег нет но вы диржитесь. и я падержусь. за хуй 👍👍🤣🤣", "пайду пабираца 🙏🙏 падайте старой бальной женщине на 'балтику 9' 🍺🍺",
+            "финансы пают рамансы 🎶🎶 причём очень грусные 😥😥", "я ни бедная. я эканомная. очень сука эканомная 👍👍"
+        ],
+        no_energy: [
+            "сил нет как у дохлай мухи 🦟🦟 нада атдахнуть 😴", "я заибалась. 😫😫 фсё никаких дел ❌❌", "чуствую сибя как выжатый лимон 🍋🍋 пайду прилягу 🛌",
+            "энергия на нуле 🔋🔋 батириейка сдохла 💀💀", "если я щас встану я упаду. так шо лучше палижу 👍👍", "я устала как сабака 🐕🐕 причём как пабитая сабака 🤕🤕",
+            "маё татемнае жывотнае - линивец 🦥🦥 тока я ищо и злая 🤬", "хочу умиреть 💀 но сначала нада паспать 😴",
+            "двигаца лень. дышать лень. жить лень. 😩😩", "выключити миня. я хачу в спящий рижим 🚫🚫"
+        ],
+        too_late: [
+            "куда в такую темень? 🌃 спать пара валить 😴", "ночю тока черти шастают 😈😈 и серёга. сиди дома 🏠", "уже позна глаза слипаюца 😩😩",
+            "после дисити на улицу выходют тока праститутки и маньяки 💃🔪 я ни атнашусь ни к тем ни к другим. пака што. 🤔", "тимно как у негра в жопе ⬛⬛ страшна 😨😨",
+            "ночю все кошки серы 🐈‍⬛🐈‍⬛ и все люди - пидарасы 👍👍", "лучше дома сидеть и пирдеть в диван 💨💨 чем па начам шарица 🚶‍♀️",
+            "мая кравать миня завёт 🛌🥰 и я ни магу ей атказать 🙏", "на ноч глядя тока за смертю хадить 💀💀 а ана и сама придёт 🤷‍♀️",
+            "завтра рана фставать и нинавидеть мир 😡😡 нада набраца сил 💪"
+        ],
+        sergey_event: [
+            "СЕРЁГА ПИДОР ВАНЮЧИЙ 🤬🤬 Я ТИБЯ НАЙДУ И ЯЙЦА НА ДВЕРНУЮ РУЧКУ НАМАТАЮ! 🔪🔪 ОПЯТЬ КУЧУ НАЛАЖИЛ! 💩💩", "БЛЯТЬ АПЯТЬ ГАВНОМ ВАНЯИТ 🤢🤢 АРЕШКИН УБЮ НАХУЙ! 😡 ГДЕ МАЯ ЛАПАТА?! ⛏️",
+            "эта падла серёга апять испиолнел свой ритуал у маей двири 💩💩 штоп у ниво хуй на лбу вырос! 🙏🤣", "если я паймаю этава засранца я скармлю иво сабакам 🐕🐕 причом па чистям 💪💪",
+            "пад маей дверю апять местыраждение удабрений 💩💩 серёга ты ни тока пидарас ты ищо и аграном! 👨‍🌾👨‍🌾🤣", "запахла висной и серёгиным дирьмом 🌸💩 рамантика блять 😂😂😂",
+            "этат мудак метит тириторию как кабель 🐕💦 нада иво кастрирывать ✂️✂️", "я вызываю экзарциста ✝️✝️ или асинизатора 🚽 не знаю хто тут нужнее 🤔🤔",
+            "нада паставить капкан 🪤 или мину 💣 штоп этаму пидару ноги атарвала 🙏🙏", "каждае утра - новый сюрприз 🎁💩 спасиба серёга што ни даёш скучать ублюдак 👍👍"
+        ],
+        game_over: {
+            energy: "ну фсё пиздес 💀💀 атъехала бапка от усталасти 😥 нифартанула 👎",
+            hunger: "с галадухи акачурилась 💀💀 а магла бы пильменей паесть дура 🥟🥟",
+            mood: "загрустила и сдохла 😭 ибаная дипресия сажрала 💔💔",
+            afk: "ты чо уснул там щенок?? 😴😴 бапка ждать ни любит! 🤬🤬"
+        }
+    };
+    
+    const getRandomPhrase = (key) => PHRASES[key][Math.floor(Math.random() * PHRASES[key].length)];
+    
+    let gameState = {
+        day: 1, time: 8,
+        stats: { energy: 100, mood: 70, hunger: 80, money: 5000 },
+        inventory: [], lastStreamDay: -2, isAsleep: false, gameOver: false, musicStarted: false,
+    };
+
+    let inactivityTimer;
+
+    const timeDisplay = document.getElementById('time-display');
+    const energyVal = document.getElementById('energy-val');
+    const moodVal = document.getElementById('mood-val');
+    const hungerVal = document.getElementById('hunger-val');
+    const moneyVal = document.getElementById('money-val');
+    const messageBox = document.getElementById('message-box');
+    const inventoryList = document.getElementById('inventory-list');
+    const ninaSprite = document.getElementById('nina-sprite');
+    const gameContainer = document.getElementById('game-container');
+    const gameOverModal = document.getElementById('game-over-modal');
+    const gameOverTitle = document.getElementById('game-over-title');
+    const gameOverMessage = document.getElementById('game-over-message');
+    const screamerModal = document.getElementById('screamer-modal');
+    const bgMusic = document.getElementById('bg-music');
+    const sfxPlayer = document.getElementById('sfx-player');
+
+    const originalSprite = "https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg";
+    const streamSprite = "https://zaebizwear.com/pidor/stream.jpg";
+
+    const streamSounds = [
+        "https://zaebizwear.com/pidor/video_2025-06-19_18-44-48.mp3",
+        "https://zaebizwear.com/pidor/video_2025-06-19_18-45-46.mp3",
+        "https://zaebizwear.com/pidor/video_2025-06-19_18-54-53%20(online-audio-converter.com).mp3"
+    ];
+    const screamerSound = "https://www.myinstants.com/media/sounds/hl2-stalker-scream.mp3";
+
+    const actions = {
+        cook: { time: 1, energy: -10, mood: 10, hunger: 40 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 },
+        watch_tv: { time: 2, energy: -5, mood: 20, hunger: -5 }, monetka: { time: 2, cost: 350, energy: -15, mood: 5, hunger: -5 },
+        gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -10, mood: 25, hunger: -5 },
+        stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }
+    };
+    
+    function triggerScreamer() {
+        if (screamerModal.classList.contains('hidden') === false) return;
+        
+        playSound(screamerSound);
+        screamerModal.classList.remove('hidden');
+        screamerModal.classList.add('shake-animation');
+        
+        setTimeout(() => {
+            screamerModal.classList.add('hidden');
+            screamerModal.classList.remove('shake-animation');
+        }, 2500);
+    }
+
+    function afkGameOver() {
+        if (gameState.gameOver || !screamerModal.classList.contains('hidden')) return;
+        gameState.gameOver = true;
+        clearTimeout(inactivityTimer);
+
+        playSound(screamerSound);
+        screamerModal.classList.remove('hidden');
+        screamerModal.classList.add('shake-animation');
+        
+        setTimeout(() => {
+            screamerModal.classList.add('hidden');
+            screamerModal.classList.remove('shake-animation');
+
+            gameOverTitle.textContent = "ЗА ИГНОР!";
+            gameOverMessage.textContent = PHRASES.game_over.afk;
+            gameOverModal.classList.remove('hidden');
+        }, 2500);
+    }
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(afkGameOver, 30000);
+    }
+    
+    function playSound(src) {
+        sfxPlayer.src = src;
+        sfxPlayer.play().catch(e => console.error("Ошибка воспроизведения:", e));
+    }
+    
+    function addMessage(text) {
+        const p = document.createElement('p');
+        p.textContent = `> ${text}`;
+        p.classList.add('mb-2', 'text-gray-800');
+        messageBox.prepend(p);
+        messageBox.scrollTop = 0;
+    }
+
+    function updateUI() {
+        Object.keys(gameState.stats).forEach(key => {
+            if (key !== 'money') gameState.stats[key] = Math.max(0, Math.min(100, gameState.stats[key]));
+        });
+        
+        timeDisplay.textContent = `День ${gameState.day}, ${String(gameState.time).padStart(2, '0')}:00`;
+        energyVal.textContent = Math.round(gameState.stats.energy);
+        moodVal.textContent = Math.round(gameState.stats.mood);
+        hungerVal.textContent = Math.round(gameState.stats.hunger);
+        moneyVal.textContent = gameState.stats.money;
+        updateInventory();
+    }
+    
+    function updateInventory() {
+        inventoryList.innerHTML = '';
+        if (gameState.inventory.length === 0) {
+            inventoryList.innerHTML = '<p class="text-gray-500 text-center">Пусто, как в башке у Серёги</p>';
+            return;
+        }
+        gameState.inventory.forEach((item, index) => {
+            const itemEl = document.createElement('div');
+            itemEl.textContent = `- ${item.name}`;
+            itemEl.classList.add('inventory-item', 'p-1', 'rounded');
+            itemEl.onclick = () => useItem(index);
+            inventoryList.appendChild(itemEl);
+        });
+    }
+    
+    function useItem(index) {
+        resetInactivityTimer();
+        const item = gameState.inventory[index];
+        gameState.inventory.splice(index, 1);
+        
+        gameState.stats.energy += item.effects.energy || 0;
+        gameState.stats.mood += item.effects.mood || 0;
+        gameState.stats.hunger += item.effects.hunger || 0;
+        
+        addMessage(`Захавала: ${item.name}. ${item.message}`);
+        updateUI();
+    }
+
+    function advanceTime(hours) {
+        if (gameState.gameOver) return;
+        
+        for (let i = 0; i < hours; i++) {
+             gameState.time++;
+             gameState.stats.hunger -= 2;
+             gameState.stats.energy -= 1.5;
+             gameState.stats.mood -= 1;
+
+             if (gameState.time === 22 && !gameState.isAsleep) addMessage(getRandomPhrase('too_late'));
+             if (gameState.time === 7 && !gameState.isAsleep) triggerRandomEvent();
+
+             if (gameState.time >= 24) {
+                 gameState.day++;
+                 gameState.time = 8;
+                 gameState.isAsleep = false;
+                 addMessage(`Наступил новый день, твою мать... День ${gameState.day}.`);
+                 if (gameState.day % 7 === 0) {
+                      gameState.stats.money += 4500;
+                      addMessage("Пенсию принесли! +4500 лавэ. Гуляем, рванина!");
+                 }
+             }
+        }
+        updateUI();
+        checkGameOver();
+    }
+
+    function performAction(actionKey) {
+        resetInactivityTimer();
+        if (gameState.gameOver || (gameState.isAsleep && actionKey !== 'sleep')) {
+            addMessage(gameState.isAsleep ? "Хр-р-р... спит бабка, не мешай." : "Всё, кина не будет. Отъехала.");
+            return;
+        }
+        
+        const action = actions[actionKey];
+        if (action.cost && gameState.stats.money < action.cost) {
+            addMessage(getRandomPhrase('no_money'));
+            return;
+        }
+        if (gameState.stats.energy < -action.energy) {
+            addMessage(getRandomPhrase('no_energy'));
+            return;
+        }
+        
+        if (actionKey === 'sleep') {
+            const timeToSleep = (24 - gameState.time) + 8;
+            gameState.isAsleep = true;
+            addMessage(getRandomPhrase('sleep'));
+            gameState.stats.energy = 100;
+            gameState.stats.mood += action.mood;
+            gameState.stats.hunger += action.hunger;
+            advanceTime(timeToSleep);
+            return;
+        }
+        
+        if(actionKey === 'stream'){
+            if(gameState.day < gameState.lastStreamDay + 3){
+                addMessage("Часто стримить вредно. Давай попозже.");
+                return;
+            }
+            gameState.lastStreamDay = gameState.day;
+            ninaSprite.src = streamSprite;
+            
+            const randomSound = streamSounds[Math.floor(Math.random() * streamSounds.length)];
+            sfxPlayer.src = randomSound;
+            addMessage(getRandomPhrase('stream'));
+
+            sfxPlayer.addEventListener('ended', () => {
+                ninaSprite.src = originalSprite;
+                addMessage("Стрим окончен. Бабки получены, можно и расслабиться.");
+            }, { once: true });
+            
+            sfxPlayer.play().catch(e => {
+                console.error("Ошибка воспроизведения:", e);
+                ninaSprite.src = originalSprite;
+            });
+
+        } else if (actionKey === 'monetka') {
+             const items = [
+                {name: 'Балтика 9', effects: {mood: 25, energy: -10}, message: 'Ебнула пивка для рывка! Сразу полегчало.'}, 
+                {name: 'Семечки', effects: {mood: 10, hunger: 5}, message: 'Погрызла семок. Весь пол в шелухе, но похуй.'}, 
+                {name: 'Доширак', effects: {hunger: 30, mood: -5}, message: 'Хуярю дошик. Вкусно, но вредно.'}
+             ];
+             const boughtItem = items[Math.floor(Math.random() * items.length)];
+             gameState.inventory.push(boughtItem);
+             addMessage(getRandomPhrase(actionKey));
+             addMessage(`В 'Монетке' купила ${boughtItem.name}.`);
+        } else {
+            addMessage(getRandomPhrase(actionKey));
+        }
+
+        if (gameState.time >= 22) {
+            addMessage(getRandomPhrase('too_late'));
+            return;
+        }
+        
+        if (action.cost) gameState.stats.money -= action.cost;
+        if (action.money) gameState.stats.money += action.money;
+        gameState.stats.energy += action.energy;
+        gameState.stats.mood += action.mood;
+        gameState.stats.hunger += action.hunger;
+        advanceTime(action.time);
+    }
+    
+    function triggerRandomEvent() {
+        const roll = Math.random();
+        if (roll < 0.33) {
+            gameContainer.classList.add('shake-animation');
+            setTimeout(() => gameContainer.classList.remove('shake-animation'), 500);
+            gameState.stats.mood -= 25;
+            addMessage(getRandomPhrase('sergey_event'));
+            updateUI();
+        } else if (roll < 0.66) {
+            gameState.stats.money -= Math.floor(Math.random() * 200) + 100;
+             addMessage("Пришла квитанция за ЖКХ. Грабят средь бела дня, черти! Лавэ улетело.");
+             updateUI();
+        }
+    }
+
+    function checkGameOver() {
+        if (gameState.gameOver) return;
+        
+        let reasonKey = '';
+        if (gameState.stats.energy <= 0) reasonKey = "energy";
+        if (gameState.stats.hunger <= 0) reasonKey = "hunger";
+        if (gameState.stats.mood <= 0) reasonKey = "mood";
+
+        if (reasonKey) {
+            gameState.gameOver = true;
+            clearTimeout(inactivityTimer);
+            triggerScreamer();
+            setTimeout(() => {
+                gameOverTitle.textContent = "Ну всё, пиздец";
+                gameOverMessage.textContent = `${PHRASES.game_over[reasonKey]} Прожила ${gameState.day - 1} дней. Не густо.`;
+                gameOverModal.classList.remove('hidden');
+            }, 2500);
+        }
+    }
+    
+    function restartGame() {
+        gameState = {
+            day: 1, time: 8,
+            stats: { energy: 100, mood: 70, hunger: 80, money: 5000 },
+            inventory: [], lastStreamDay: -2,
+            isAsleep: false, gameOver: false, musicStarted: gameState.musicStarted
+        };
+        messageBox.innerHTML = '';
+        addMessage(getRandomPhrase('wake_up'));
+        gameOverModal.classList.add('hidden');
+        ninaSprite.src = originalSprite;
+        updateUI();
+        resetInactivityTimer();
+    }
+
+    document.getElementById('game-wrapper').addEventListener('click', () => {
+        resetInactivityTimer();
+        if (!gameState.musicStarted) {
+            bgMusic.volume = 0.2;
+            bgMusic.play().catch(e => console.error("Музыку зажевало:", e));
+            gameState.musicStarted = true;
+            addMessage("Музычка пошла... Начинаем представление.");
+        }
+    }, { capture: true });
+    
+    window.onload = () => {
+        updateUI();
+        addMessage(getRandomPhrase('wake_up'));
+        resetInactivityTimer();
+    }
+</script>
+
+</body>
+</html>
