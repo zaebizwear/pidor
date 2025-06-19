@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PIDOR:STORE - официальный магазин эксклюзивных кроссовок. Стиль, комфорт и инновации в каждой паре.">
+    <meta name="keywords" content="кроссовки, pidor, обувь, стиль, мода, магазин">
     <title>PIDOR:STORE - Официальный магазин кроссовок</title>
     <link rel="icon" href="https://zaebizwear.com/pidor/favicon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -21,8 +23,8 @@
             --medium-gray: #d2d2d7;
             --dark-gray: #86868b;
             --text-dark: #1d1d1f;
-            --accent: #00FF4D;
-            --accent-hover: #00D642;
+            --accent: #0073FF;
+            --accent-hover: #0066E5;
             --glass-bg: rgba(255, 255, 255, 0.7);
             --glass-border: rgba(255, 255, 255, 0.8);
             --glass-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
@@ -74,10 +76,16 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            cursor: pointer;
         }
 
         .logo img {
             height: 32px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1);
         }
 
         .logo h1 {
@@ -185,6 +193,8 @@
 
         .cta-button:hover {
             background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 115, 255, 0.2);
         }
 
         .section-title {
@@ -222,6 +232,12 @@
             background: var(--white);
             box-shadow: 0 5px 30px rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .product-image {
@@ -232,12 +248,18 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #f9f9f9, #f0f0f0);
+            cursor: pointer;
         }
 
         .product-image img {
             max-width: 80%;
             max-height: 80%;
             object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover img {
+            transform: scale(1.05);
         }
 
         .product-badge {
@@ -250,6 +272,7 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 400;
+            z-index: 10;
         }
 
         .product-info {
@@ -290,6 +313,11 @@
             justify-content: center;
             cursor: pointer;
             font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .size-option:hover {
+            border-color: var(--accent);
         }
 
         .size-option.selected {
@@ -331,10 +359,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s ease;
         }
 
         .add-to-cart:hover {
-            background: rgba(0, 255, 77, 0.05);
+            background: rgba(0, 115, 255, 0.05);
             border-color: var(--accent);
         }
 
@@ -387,6 +416,7 @@
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 300;
+            transition: color 0.3s ease;
         }
 
         .footer-links a:hover {
@@ -446,6 +476,8 @@
             max-width: 90%;
             max-height: 90%;
             object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
         }
 
         .close-modal {
@@ -463,6 +495,11 @@
             justify-content: center;
             align-items: center;
             border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .cart-preview {
@@ -496,6 +533,11 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--dark-gray);
+            transition: color 0.3s ease;
+        }
+
+        .close-cart:hover {
+            color: var(--accent);
         }
 
         .cart-items {
@@ -552,6 +594,11 @@
             cursor: pointer;
             font-size: 1.1rem;
             align-self: flex-start;
+            transition: color 0.3s ease;
+        }
+
+        .remove-item:hover {
+            color: var(--accent);
         }
 
         .cart-total {
@@ -575,6 +622,7 @@
             cursor: pointer;
             font-family: 'IBM Plex Mono', monospace;
             border-radius: 30px;
+            transition: background 0.3s ease;
         }
 
         .checkout-btn:hover {
@@ -624,6 +672,11 @@
             cursor: pointer;
             font-size: 1rem;
             margin: 10px 0;
+            transition: background 0.3s ease;
+        }
+
+        .translate-btn:hover {
+            background: var(--accent-hover);
         }
 
         .supplier-sign {
@@ -632,6 +685,24 @@
             color: var(--dark-gray);
             border-top: 1px solid var(--medium-gray);
             padding-top: 10px;
+        }
+        
+        .zbs-logo {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .zbs-logo a {
+            display: inline-block;
+        }
+        
+        .zbs-logo img {
+            height: 40px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .zbs-logo img:hover {
+            opacity: 0.8;
         }
 
         @media (max-width: 1100px) {
@@ -688,6 +759,10 @@
             .cart-preview {
                 width: 100%;
             }
+            
+            .nav-links {
+                gap: 15px;
+            }
         }
     </style>
 </head>
@@ -695,7 +770,7 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
+                <div class="logo" id="homeLogo">
                     <img src="https://zaebizwear.com/pidor/favicon.png" alt="Pidor Store Logo">
                     <h1>PIDOR:STORE</h1>
                 </div>
@@ -798,7 +873,6 @@
                         <li><a href="#" class="nav-link" data-page="home">Все кроссовки</a></li>
                         <li><a href="#" class="nav-link" data-page="new">Новинки</a></li>
                         <li><a href="#" class="nav-link" data-page="top">Топ товары</a></li>
-                        <li><a href="#">Ограниченные серии</a></li>
                     </ul>
                 </div>
                 
@@ -819,6 +893,12 @@
                         <li>Режим работы: 10:00-22:00</li>
                     </ul>
                 </div>
+            </div>
+            
+            <div class="zbs-logo">
+                <a href="https://zaebizwear.com" target="_blank">
+                    <img src="https://zaebizwear.com/zbs.svg" alt="ZBS Logo">
+                </a>
             </div>
             
             <div class="copyright">
@@ -952,6 +1032,17 @@
                 sizes: [37, 38, 39, 40, 41, 42, 43],
                 new: true,
                 top: true
+            },
+            { 
+                id: 9, 
+                name: "PIDOR TRUCK®", 
+                price: 15999, 
+                oldPrice: 19999,
+                image: "https://zaebizwear.com/pidor/truck.jpg",
+                description: "Хз просто стильные кросовки",
+                sizes: [39, 40, 41, 42, 43, 44],
+                new: true,
+                top: false
             }
         ];
 
@@ -963,6 +1054,18 @@
             setupNavigation();
             setupCart();
             setupWarningModal();
+            setupImageZoom();
+            
+            // Добавляем переход на главную по клику на лого
+            document.getElementById('homeLogo').addEventListener('click', () => {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                document.querySelector('[data-page="home"]').classList.add('active');
+                document.querySelectorAll('.page').forEach(page => {
+                    page.classList.remove('active');
+                });
+                document.getElementById('home').classList.add('active');
+                window.scrollTo(0, 0);
+            });
         });
 
         function renderProducts(pageId, productsList) {
@@ -972,13 +1075,20 @@
             container.innerHTML = '';
             
             productsList.forEach(product => {
+                // Определяем, какой бейдж показывать (только один)
+                let badge = '';
+                if (product.new) {
+                    badge = '<span class="product-badge">Новинка</span>';
+                } else if (product.top) {
+                    badge = '<span class="product-badge">Хит</span>';
+                }
+                
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
                     <div class="product-image">
                         <img src="${product.image}" alt="${product.name}">
-                        ${product.new ? '<span class="product-badge">Новинка</span>' : ''}
-                        ${product.top ? '<span class="product-badge">Хит</span>' : ''}
+                        ${badge}
                     </div>
                     <div class="product-info">
                         <h3 class="product-title">${product.name}</h3>
@@ -1028,6 +1138,7 @@
                         page.classList.remove('active');
                     });
                     document.getElementById(pageId).classList.add('active');
+                    window.scrollTo(0, 0);
                 });
             });
             
@@ -1141,6 +1252,32 @@
                 updateCartCount();
                 updateCartDisplay();
                 document.getElementById('cartPreview').classList.remove('active');
+            });
+        }
+        
+        function setupImageZoom() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeModal = document.querySelector('.close-modal');
+            
+            // Добавляем обработчики клика на все изображения товаров
+            document.querySelectorAll('.product-image img').forEach(img => {
+                img.addEventListener('click', function() {
+                    modal.style.display = 'flex';
+                    modalImg.src = this.src;
+                });
+            });
+            
+            // Закрытие модального окна
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // Закрытие при клике вне изображения
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
             });
         }
     </script>
