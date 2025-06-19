@@ -77,8 +77,15 @@
                             <div><span>🍲</span> <strong>Сытость:</strong> <span id="hunger-val">80</span></div>
                             <div><span>💰</span> <strong>Лавэ:</strong> <span id="money-val">5000</span> руб.</div>
                         </div>
-
+                        
                         <div class="w-full mt-4 pt-4 border-t-2 border-[#d4c4b0]">
+                            <h3 class="text-xl font-bold text-center text-gray-700 mb-2">Продукты 🛒</h3>
+                            <div id="products-count" class="text-center text-lg font-semibold bg-white p-2 rounded border border-gray-300">
+                                2 шт.
+                            </div>
+                        </div>
+
+                        <div class="w-full mt-2 pt-2 border-t-2 border-[#d4c4b0]">
                             <h3 class="text-xl font-bold text-center text-gray-700 mb-2">Хабар</h3>
                             <div id="inventory-list" class="bg-white p-2 rounded border border-gray-300 h-24 overflow-y-auto">
                                 <p class="text-gray-500 text-center">Пусто, как в башке у Серёги</p>
@@ -133,7 +140,7 @@
     const PHRASES = {
         wake_up: [
             "падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂", "какова хрена так рана ⏰⏰⏰ апять этат будильник ебучий арёт 🤬🤬🤬",
-            "так фстали атряхнулись и пашли наху... тоесть па дилам 🚶‍♀️🚶‍♀️🚶‍♀️🤣🤣", "снова утра 🌅🌅 сдохнутьбы да пенсию нада палучить 💸💸👍",
+            "так фстали атряхнулись и пашли наху... тоесть па дилам 🚶‍♀️🚶‍♀️🚶‍♀️🤣🤣", "снова утра 🌅🌅 сдохнутьбы да пенсию нада палучить �💸👍",
             "глаза прадрала а спина ни разгибаеца 👵👵👵 старость ни радасть а пиздес 😫😫😅", "кто я?? где я?? 🧐🧐 а я старая бабка в сваей халупе. заибись. 😂👍",
             "сонце в ибало светит ☀️😎😎 занавески нада была платнее задернуть 😡😡", "ищо адин день в этам дурдоме 🤪🤪 ну с богом или с чортом похуй 🙏😈🤣",
             "хочица лижать и пливать в паталок 💦💦 но нада итти и виршить виликие дила. например пасрать. 🚽💩😂", "праснулась но ни ачнулась 😵‍💫😵‍💫 дайте водки 🍶🍶 плиз 🙏😂"
@@ -145,6 +152,12 @@
             "гатовка - эта как секс. нада многа двигаца и громка станать от усталасти 🥵🥵🤣🤣🤣", "пахнет вкусна?? эта я лук жарю 🧅🧅 или у миня апять инсульть 🤪🤪🤪",
             "завтрак чимпиона: вчирашний чай и пазавчирашний хлеб ☕🍞 божествина 😇😇👍", "если ида упала на пол у миня есть 5 сикунд штобы иё паднять. и 5 часов штобы съесть 🤣🤣🤣👍"
         ],
+        no_products: [
+            "жрать нечива 😭😭😭 нада в магазин тащица 🛒🛒", "халадильник пустой как галава у серёги 텅 빈 🧠🧠", "всё сожрала 😋😋 пора за новой партией говна в манетку 👍👍",
+            "продукты кончились 😱😱 я скора с голоду сдохну 💀💀", "чтобы штота сварить нада штота иметь 🤷‍♀️🤷‍♀️ а у миня нихуя нет 😂",
+            "мышь в халадильнике павесилась 🐭💀💀 нада в магаз 🏃‍♀️🏃‍♀️", "карочи жрать нету от слова савсем ❌❌❌", "сварила бы суп да не из чиво 🥣🥣😭",
+            "в рот ничиво палажить 😫😫😫 апять в эту манетку пирица 😡", "хачу жрать а нечива!!!! 😡😡😡"
+        ],
         sleep: [
             "вырубилась до утра 😴😴 галава чугунная но хоть силы есть 💪💪😅", "фсё на бакавую 🛌🛌 если серёга ночю насрёт пад двер - убю 🔪🔪😡",
             "завалилась спать 😴😴 пусь мне присница пенсия и дохлый депутат 💸💸💀😂😂", "хррр... пшшш... 💤💤 эта я сплю. или умираю. утрам разбирёмся 🤔🤔🤣🤣",
@@ -154,17 +167,17 @@
         ],
         watch_tv: [
             "фключаем зомбаящик 📺📺 о 'давай паженимся'! старые бляди ищут сибе дедаф-алкашей. класика 👍👍🤣🤣", "шо там па навастям? 🧐🧐 апять пиздят как дышат 🤥🤥 выключай нахуй эту прапаганду 🤬🤬",
-            "ооо 'след' 👣👣 этих пидаров ищо ни закрыли? ладна пасметрим как они там трупы патрашат 🔪💀😂", "риклама стиральнава парашка 🧼🧼 как будто мне есть шо стирать кроме старых трусоф 🩲🩲�🤣",
+            "ооо 'след' 👣👣 этих пидаров ищо ни закрыли? ладна пасметрим как они там трупы патрашат 🔪💀😂", "риклама стиральнава парашка 🧼🧼 как будто мне есть шо стирать кроме старых трусоф 🩲🩲🤣🤣",
             "малахав апять кавота с кемта мирит 👨‍⚖️👨‍⚖️ да пусть они друг друга паубивают так интиреснее будит 🍿🍿", "сматрю прагноз пагоды ☀️🌧️ завтра абищают пиздес. как и вчира и сиводня 🤷‍♀️🤷‍♀️",
             "сириал пра ментоф 👮‍♂️👮‍♂️ все такие чесные аж ташнит 🤢🤢 в жизнибы так 😂😂", "паказывают канцерт кабзона 🎤🎤 он ищо живой?? или эта запись с таво света?? 👻👻🤔",
             "пульт где?? 🧐🧐 хто праибал пульт?! а я на ньом сижу 🍑🍑🤣🤣", "на икране ачиридная гаварящая галава 🗣️🗣️ лучшебы жопу паказали 🍑🍑😂😂"
         ],
         monetka: [
-            "папиздила в 'манетку' 🛒🛒 нада взять 'балтики' и кильки в тамате а то жизнь - гавно 🍺🐟👎", "надабы затарица хавчикам 🛍️🛍️ надеюсь касирша сиводня ни будит тупить как пропка 🤦‍♀️🤦‍♀️",
-            "сганяю в магазін пака всю пенсию ни праибала на хуйню всякую 💸💸🤪", "очиридь как в мавзалей 🧍‍♀️🧍‍♂️🧍‍♀️🧍‍♂️ што блять бисплатна раздают?? 🤔🤔",
-            "эта сука на касе апять здачу зажала 😡😡 да штоп у нийо руки атсохли 🙏🙏", "купила калбасу па акции 🌭🌭 надеюсь ана ни из туалетнай бумаги 🧻🧻🤣🤣",
-            "сумки тижолые как мая жизнь 👜👜😩 нада была тилежку брать 🛒🛒", "прадавец-кансультант? 🤔 он сам ни знаит где шо лежит уёбак 🤬🤬",
-            "цены растут быстрее чем грибы после даждя 🍄🍄📈 скора придёца святым духам питаца 😇😇", "взяла пакет. типерь я багачка 🤑🤑 магу сибе пазволить 👍👍"
+            "НАКУПИЛА В МАНЕТКИ ПАКЕТ ГАВНА 😂😂😂 ЩАС БУДУ РАСПАКОВАЧКУ СНИМАТЬ 📦📦", "спустила пол пенсии на какуюто хуйню 💸💸 зато хата полная 🤣🤣",
+            "тилежка была полная 🛒🛒 типерь халадильник полный 🧊🧊 заибись 👍", "патратила кучу бабла 🤑🤑 зато теперь есть чо жрать... наверна 🤔🤔",
+            "взяла всё по акции 'два по цене трёх' 👍👍🤣🤣 я бизнисменша 💼💼", "касирша на миня сматрела как на дуру 👀👀 а я проста галодная была 🤷‍♀️🤷‍♀️",
+            "притащила домой 10 пакетав 🛍️🛍️🛍️ щас здохну пака разбиру 🥵🥵", "закупилась так штоб месяц из дома ни выхадить 🏠🏠👍👍",
+            "у миня теперь есть гречка, сахар, соль... 🧂🍚 осталось пережить ядерную вайну ☢️☢️🤣🤣", "я вашпето на диете... была... до манетки 😂😂😂"
         ],
         gossip: [
             "пайду патрещу с тимафеевной старой перечницей 👵🌶️ узнаю хто с кем спит и хто шо украл 😏😏", "тимафеевна выхади подлая душа!! 🗣️🗣️ есть разгавор. нада кости пиримыть всиму падьезду 🦴🦴😂",
@@ -191,7 +204,7 @@
             "бабок нет! 😥 голяк! жди пенсию 👵", "деньги кончились блять! 😭 придёца сасать лапу 🐾🐾", "нищета ибаная! 🤬🤬 где маё лавэ? 💸💸",
             "в кармане - вошь на аркане. и то дохлая 🦗🦗", "нада бы аграбить банк 🏦💰 но лень 😴😴", "магу прадать почку. или душу. што дароже? 🤔🤔",
             "денег нет но вы диржитесь. и я падержусь. за хуй 👍👍🤣🤣", "пайду пабираца 🙏🙏 падайте старой бальной женщине на 'балтику 9' 🍺🍺",
-            "финансы пают рамансы 🎶🎶 причём очень грусные 😥😥", "я ни бедная. я эканомная. очень сука эканомная 👍👍"
+            "финансы поют рамансы 🎶🎶 причём очень грусные 😥😥", "я ни бедная. я эканомная. очень сука эканомная 👍👍"
         ],
         no_energy: [
             "сил нет как у дохлай мухи 🦟🦟 нада атдахнуть 😴", "я заибалась. 😫😫 фсё никаких дел ❌❌", "чуствую сибя как выжатый лимон 🍋🍋 пайду прилягу 🛌",
@@ -226,6 +239,7 @@
     let gameState = {
         day: 1, time: 8,
         stats: { energy: 100, mood: 70, hunger: 80, money: 5000 },
+        products: 2,
         inventory: [], lastStreamDay: -2, isAsleep: false, gameOver: false, musicStarted: false,
     };
 
@@ -236,6 +250,7 @@
     const moodVal = document.getElementById('mood-val');
     const hungerVal = document.getElementById('hunger-val');
     const moneyVal = document.getElementById('money-val');
+    const productsCount = document.getElementById('products-count');
     const messageBox = document.getElementById('message-box');
     const inventoryList = document.getElementById('inventory-list');
     const ninaSprite = document.getElementById('nina-sprite');
@@ -258,9 +273,12 @@
     const screamerSound = "https://www.myinstants.com/media/sounds/hl2-stalker-scream.mp3";
 
     const actions = {
-        cook: { time: 1, energy: -10, mood: 10, hunger: 40 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 },
-        watch_tv: { time: 2, energy: -5, mood: 20, hunger: -5 }, monetka: { time: 2, cost: 350, energy: -15, mood: 5, hunger: -5 },
-        gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -10, mood: 25, hunger: -5 },
+        cook: { time: 1, energy: -10, mood: 10, hunger: 40 },
+        sleep: { time: 8, energy: 100, mood: 10, hunger: -20 },
+        watch_tv: { time: 2, energy: -5, mood: 20, hunger: -5 },
+        monetka: { time: 2, energy: -15, mood: 5, hunger: -5 },
+        gossip: { time: 1, energy: -5, mood: 15, hunger: -5 },
+        tiktok: { time: 1, energy: -10, mood: 25, hunger: -5 },
         stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }
     };
     
@@ -324,6 +342,7 @@
         moodVal.textContent = Math.round(gameState.stats.mood);
         hungerVal.textContent = Math.round(gameState.stats.hunger);
         moneyVal.textContent = gameState.stats.money;
+        productsCount.textContent = `${gameState.products} шт.`;
         updateInventory();
     }
     
@@ -390,16 +409,21 @@
         }
         
         const action = actions[actionKey];
-        if (action.cost && gameState.stats.money < action.cost) {
-            addMessage(getRandomPhrase('no_money'));
-            return;
-        }
-        if (gameState.stats.energy < -action.energy) {
+
+        if (action.energy && gameState.stats.energy < -action.energy) {
             addMessage(getRandomPhrase('no_energy'));
             return;
         }
         
-        if (actionKey === 'sleep') {
+        // --- Specific Action Logic ---
+        if (actionKey === 'cook') {
+            if (gameState.products <= 0) {
+                addMessage(getRandomPhrase('no_products'));
+                return;
+            }
+            gameState.products--;
+            addMessage(getRandomPhrase('cook'));
+        } else if (actionKey === 'sleep') {
             const timeToSleep = (24 - gameState.time) + 8;
             gameState.isAsleep = true;
             addMessage(getRandomPhrase('sleep'));
@@ -408,9 +432,17 @@
             gameState.stats.hunger += action.hunger;
             advanceTime(timeToSleep);
             return;
-        }
-        
-        if(actionKey === 'stream'){
+        } else if (actionKey === 'monetka') {
+            const cost = Math.floor(Math.random() * 1001) + 1000;
+            if (gameState.stats.money < cost) {
+                addMessage(getRandomPhrase('no_money'));
+                return;
+            }
+            gameState.stats.money -= cost;
+            const productsBought = Math.floor(Math.random() * 3) + 2; // 2-4 products
+            gameState.products += productsBought;
+            addMessage(`${getRandomPhrase('monetka')} (-${cost} руб.💰, +${productsBought} продуктов 🛒)`);
+        } else if(actionKey === 'stream'){
             if(gameState.day < gameState.lastStreamDay + 3){
                 addMessage("Часто стримить вредно. Давай попозже.");
                 return;
@@ -431,31 +463,25 @@
                 console.error("Ошибка воспроизведения:", e);
                 ninaSprite.src = originalSprite;
             });
-
-        } else if (actionKey === 'monetka') {
-             const items = [
-                {name: 'Балтика 9', effects: {mood: 25, energy: -10}, message: 'Ебнула пивка для рывка! Сразу полегчало.'}, 
-                {name: 'Семечки', effects: {mood: 10, hunger: 5}, message: 'Погрызла семок. Весь пол в шелухе, но похуй.'}, 
-                {name: 'Доширак', effects: {hunger: 30, mood: -5}, message: 'Хуярю дошик. Вкусно, но вредно.'}
-             ];
-             const boughtItem = items[Math.floor(Math.random() * items.length)];
-             gameState.inventory.push(boughtItem);
-             addMessage(getRandomPhrase(actionKey));
-             addMessage(`В 'Монетке' купила ${boughtItem.name}.`);
         } else {
-            addMessage(getRandomPhrase(actionKey));
+             addMessage(getRandomPhrase(actionKey));
         }
-
+        
         if (gameState.time >= 22) {
             addMessage(getRandomPhrase('too_late'));
             return;
         }
         
-        if (action.cost) gameState.stats.money -= action.cost;
+        // Apply generic changes
         if (action.money) gameState.stats.money += action.money;
         gameState.stats.energy += action.energy;
         gameState.stats.mood += action.mood;
-        gameState.stats.hunger += action.hunger;
+        if(actionKey === 'cook') { // Hunger only changes on cook
+             gameState.stats.hunger += action.hunger;
+        } else {
+             gameState.stats.hunger -= 5; // Passive hunger for other actions
+        }
+        
         advanceTime(action.time);
     }
     
@@ -498,6 +524,7 @@
         gameState = {
             day: 1, time: 8,
             stats: { energy: 100, mood: 70, hunger: 80, money: 5000 },
+            products: 2,
             inventory: [], lastStreamDay: -2,
             isAsleep: false, gameOver: false, musicStarted: gameState.musicStarted
         };
