@@ -32,7 +32,7 @@
         @media (min-width: 1280px) {
             html {
                 font-size: 18px; /* Even larger for very wide screens */
-        }
+            }
         }
 
 
@@ -120,7 +120,7 @@
 
             #message-box {
                 height: 25%; /* Относительная высота */
-                min-height: 60px; /* Жестко задаем минимальную высоту */
+                min-height: 50px; /* Жестко задаем минимальную высоту */
                 font-size: 0.8rem; /* Чуть меньше шрифт */
                 padding: 0.5rem;
                 margin-bottom: 0.3rem;
@@ -129,14 +129,23 @@
             .actions-buttons-grid {
                 gap: 0.3rem; /* Еще меньший зазор для кнопок */
                 padding-top: 0.3rem;
-                grid-template-columns: repeat(4, 1fr); /* 4 колонки для кнопок */
+                /* Переключаемся на 3 колонки, чтобы оставить место для большой кнопки "Начать заново" */
+                grid-template-columns: repeat(3, 1fr); 
             }
 
             .action-button {
-                font-size: 0.9rem; /* Меньший шрифт для кнопок */
-                padding: 0.4rem 0.2rem; /* Меньший padding */
-                min-height: 40px; /* Немного уменьшаем мин. высоту */
+                font-size: 0.8rem; /* Меньший шрифт для кнопок */
+                padding: 0.3rem 0.2rem; /* Меньший padding */
+                min-height: 35px; /* Немного уменьшаем мин. высоту */
             }
+            
+            /* Специальное правило для кнопки "Начать заново" на этом разрешении */
+            .action-button.col-span-full {
+                grid-column: 1 / -1; /* Занимает всю ширину */
+                font-size: 1rem; /* Чуть больше шрифт для этой кнопки */
+                min-height: 40px; /* Чуть больше высота */
+            }
+
 
             .responsive-text-xl { font-size: 0.9rem; }
             .responsive-text-2xl { font-size: 1rem; }
