@@ -10,37 +10,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Base font size for rem units, adjusted for mobile first */
+        /* Base font size for rem units, optimized for mobile portrait */
         html {
-            font-size: 14px; /* Base for mobile */
+            font-size: 13px; /* Smaller base for iPhone 13 mini like screens */
         }
-        @media (min-width: 480px) {
+        @media (min-width: 375px) { /* iPhone SE, etc */
             html {
-                font-size: 15px; /* Slightly larger for small tablets */
+                font-size: 14px;
             }
         }
-        @media (min-width: 768px) {
+        @media (min-width: 480px) { /* Larger phones like iPhone 13 Pro Max, small tablets */
             html {
-                font-size: 16px; /* Standard for larger tablets/desktops */
+                font-size: 15px;
             }
         }
-        @media (min-width: 1024px) {
+        @media (min-width: 768px) { /* Tablets in portrait, standard desktops */
             html {
-                font-size: 17px; /* Slightly larger for big screens */
+                font-size: 16px;
             }
         }
-        @media (min-width: 1280px) {
+        @media (min-width: 1024px) { /* Larger desktops */
             html {
-                font-size: 18px; /* Even larger for very wide screens */
+                font-size: 17px;
+        }
+        }
+        /* Media query for landscape orientation: force orientation warning *ONLY* for small screens */
+        @media (orientation: landscape) and (max-width: 767px) {
+            #orientation-overlay {
+                display: flex !important;
+            }
+            #app-container {
+                display: none !important;
             }
         }
-
 
         body, html {
             font-family: 'Inter', sans-serif;
             background-color: #000;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Prevent body scroll */
             width: 100%;
             height: 100%;
         }
@@ -50,7 +58,7 @@
         }
 
         #orientation-overlay {
-            display: none;
+            display: none; /* Hidden by default, shown by media query for small landscape screens */
             position: fixed;
             inset: 0;
             background-color: #111;
@@ -82,187 +90,235 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            /* Изменения для лучшей адаптации на мобильных в альбомной ориентации */
-            width: 98vw;
-            height: 98vh; /* Теперь высота также зависит от vh */
-            max-width: calc(98vh * 16 / 9); /* Ограничение по ширине для 16:9 */
-            max-height: calc(98vw * 9 / 16); /* Ограничение по высоте для 16:9 */
-            min-width: 300px; /* Минимальная ширина */
-            min-height: calc(300px * 9 / 16); /* Минимальная высота для 16:9 */
-            aspect-ratio: 16 / 9; /* Желаемое соотношение сторон */
+            width: 96vw; /* Maximize width usage */
+            height: 96vh; /* Maximize height usage */
+            max-width: 500px; /* Max width for comfortable reading on desktop, creates side borders */
+            max-height: 850px; /* Max height for desktop window */
+            min-width: 300px; /* Minimum width for small phones */
+            min-height: 500px; /* Minimum height for small phones */
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 0.5rem; /* Use rem for padding */
+            padding: 0.5rem;
         }
-
-        /* Адаптация под 1280x512 или похожие очень широкие разрешения */
-        @media (min-width: 1200px) and (max-height: 550px) { /* Adjust range as needed */
-            #game-container {
-                width: 98vw;
-                height: 96vh; /* Чуть меньше, чтобы точно влезло */
-                max-width: 1280px; /* Фиксируем максимальную ширину */
-                max-height: 512px; /* Фиксируем максимальную высоту */
-                min-width: unset; /* Сброс минимальной ширины */
-                min-height: unset; /* Сброс минимальной высоты */
-                aspect-ratio: unset; /* Отключаем aspect-ratio для этой ширины */
-            }
-
-            .game-grid-layout {
-                grid-template-columns: 0.3fr 0.7fr; /* Две колонки */
-                gap: 0.5rem; /* Меньший зазор */
-                height: calc(100% - 3rem - 0.5rem); /* Уменьшаем высоту заголовка */
-            }
-
-            .stats-column {
-                padding: 0.5rem; /* Меньший padding */
-            }
-
-            #message-box {
-                height: 25%; /* Относительная высота */
-                min-height: 50px; /* Жестко задаем минимальную высоту */
-                font-size: 0.8rem; /* Чуть меньше шрифт */
-                padding: 0.5rem;
-                margin-bottom: 0.3rem;
-            }
-            
-            .actions-buttons-grid {
-                gap: 0.3rem; /* Еще меньший зазор для кнопок */
-                padding-top: 0.3rem;
-                /* Переключаемся на 3 колонки, чтобы оставить место для большой кнопки "Начать заново" */
-                grid-template-columns: repeat(3, 1fr); 
-            }
-
-            .action-button {
-                font-size: 0.8rem; /* Меньший шрифт для кнопок */
-                padding: 0.3rem 0.2rem; /* Меньший padding */
-                min-height: 35px; /* Немного уменьшаем мин. высоту */
-            }
-            
-            /* Специальное правило для кнопки "Начать заново" на этом разрешении */
-            .action-button.col-span-full {
-                grid-column: 1 / -1; /* Занимает всю ширину */
-                font-size: 1rem; /* Чуть больше шрифт для этой кнопки */
-                min-height: 40px; /* Чуть больше высота */
-            }
-
-
-            .responsive-text-xl { font-size: 0.9rem; }
-            .responsive-text-2xl { font-size: 1rem; }
-            .responsive-text-3xl { font-size: 1.2rem; }
-            .responsive-text-5xl { font-size: 1.8rem; } /* Уменьшаем заголовок игры */
-        }
-
 
         #game-screen {
             display: flex;
+            flex-direction: column; /* Stack elements vertically */
             width: 100%;
             height: 100%;
-            justify-content: center;
+            overflow: hidden; /* Important to prevent extra scrollbars */
+        }
+
+        /* Header area */
+        .game-header {
+            flex-shrink: 0;
+            padding: 0.5rem;
+            border-bottom: 2px dashed #8B4513;
+            margin-bottom: 0.5rem;
+        }
+        .game-header h1 {
+            font-size: 1.8rem; /* Smaller for mobile portrait */
+            line-height: 1.1;
+        }
+        .game-header p {
+            font-size: 0.8rem; /* Smaller for mobile portrait */
+            margin-top: 0.2rem;
+        }
+
+
+        /* Main content area: Stats, Character Image, Message Box */
+        .main-content-area {
+            flex-grow: 1; /* Allow this area to take remaining space */
+            display: flex;
+            flex-direction: column; /* Stack stats/char and message vertically */
+            gap: 0.5rem;
+            overflow: hidden; /* Important for inner scrolling */
+        }
+
+        .stats-and-character {
+            flex-shrink: 0; /* Prevents this section from shrinking too much */
+            display: flex;
+            align-items: flex-start; /* Align items to top */
+            gap: 0.5rem;
+            background-color: #f3e9dc;
+            padding: 0.5rem; /* Compact padding */
+            border-radius: 0.5rem;
+            border: 1px solid #d4c4b0;
+            flex-wrap: wrap; /* Allow wrapping if content is too wide */
+            justify-content: center; /* Center content horizontally on wrap */
+        }
+
+        .char-images-container {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            width: 80px; /* Fixed width for image column */
         }
-
-        .game-grid-layout {
-            display: grid;
-            grid-template-columns: 1fr; /* Default to single column for mobile */
-            gap: 0.5rem; /* Use rem for gap */
-            height: calc(100% - 4rem - 0.5rem); /* Adjusted for header height */
-            overflow: hidden;
-            flex-grow: 1;
-        }
-
-        @media (min-width: 768px) {
-            .game-grid-layout {
-                grid-template-columns: 0.3fr 0.7fr; /* Two columns for larger screens */
-                gap: 1rem;
-                height: calc(100% - 7vmin - 1vmin); /* Revert to vmin for larger screens */
+        @media (min-width: 480px) { /* Larger phones */
+            .char-images-container {
+                width: 100px;
             }
         }
 
-        .stats-column {
-            display: flex;
-            flex-direction: column;
-            background-color: #f3e9dc;
-            padding: 0.8rem; /* Use rem for padding */
-            border-radius: 0.5rem; /* Use rem for border-radius */
-            border: 1px solid #d4c4b0; /* Use px for thin borders */
-            overflow-y: auto;
-            flex-shrink: 0;
-            width: 100%;
-            box-sizing: border-box;
-            -webkit-overflow-scrolling: touch;
+
+        .stats-list {
+            flex-grow: 1; /* Allow stats to take remaining space */
+            display: grid; /* Use grid for stats */
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for stats */
+            gap: 0.1rem 0.5rem; /* Compact gap */
+            font-size: 0.85rem; /* Adjusted for mobile */
+            align-items: center; /* Vertically align text in grid cells */
+        }
+        .stats-list div {
+            padding: 0; /* No extra padding */
+            line-height: 1.2;
         }
 
-        .actions-column {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            overflow: hidden;
-            box-sizing: border-box;
+
+        #products-section {
+            grid-column: 1 / -1; /* Spans all columns in grid */
+            border-top: 1px solid #d4c4b0;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            text-align: center;
         }
+
+        #child-info {
+            grid-column: 1 / -1; /* Spans all columns */
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            text-align: center;
+        }
+
+        /* Container for Nina and Suitor images to control their horizontal alignment */
+        .nina-suitor-sprites {
+            display: flex;
+            align-items: flex-end; /* Align to bottom for consistent baseline if sizes differ */
+            /* Removed justify-content: center to align to start of flexbox */
+            gap: 0.3rem; /* Small gap between images */
+            margin-top: 0.5rem; /* Space below "Баба Нина" title */
+            flex-shrink: 0;
+        }
+        #nina-sprite {
+            width: 60px; /* Fixed size for mobile portrait */
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            border: 2px solid white;
+        }
+        @media (min-width: 480px) { /* Larger phones */
+            #nina-sprite {
+                width: 70px;
+                height: 70px;
+            }
+        }
+
+
+        #suitor-photo-container {
+            /* This container will be populated and shown when a suitor is active */
+            display: flex; /* Changed from hidden to flex when active */
+            flex-direction: column;
+            align-items: center;
+        }
+        #suitor-photo-container img {
+            width: 50px; /* Fixed size */
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #f06292;
+        }
+        /* When suitor is active, adjust Nina's margin to compensate for suitor being to the left */
+        /* This rule is now less critical as flexbox naturally handles spacing with `gap` */
+
 
         #message-box {
-            /* Новые значения для лучшей адаптации на мобильных */
-            height: 30%; /* Уменьшаем высоту, чтобы оставить больше места для кнопок */
-            min-height: 60px; /* Минимальная высота */
-            max-height: 120px; /* Максимальная высота */
+            flex-shrink: 0; /* Prevent from shrinking */
+            height: 30%; /* Use percentage of parent height for flexibility */
+            min-height: 70px; /* Minimum height */
+            max-height: 150px; /* Maximum height to control space */
             background-color: #faf3e0;
-            padding: 0.8rem; /* Use rem for padding */
-            border-radius: 0.5rem; /* Use rem for border-radius */
-            border: 1px solid #a0a0a0; /* Use px for thin borders */
-            overflow-y: auto;
-            flex-shrink: 0;
-            margin-bottom: 0.5rem; /* Use rem for margin */
+            padding: 0.6rem; /* Compact padding */
+            border-radius: 0.5rem;
+            border: 1px solid #a0a0a0;
+            overflow-y: auto; /* Allow internal scrolling */
             box-sizing: border-box;
             text-align: left;
             -webkit-overflow-scrolling: touch;
-            font-size: 0.9rem; /* Adjust message box text size */
+            font-size: 0.85rem; /* Adjusted for mobile */
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
         }
-        /* Возвращаем оригинальную высоту для больших экранов, если не попали в 1280x512 */
-        @media (min-width: 768px) and (min-height: 551px) { /* Если экран достаточно высокий */
-            #message-box {
-                height: 25%;
-                min-height: 80px;
-                max-height: unset; /* Сброс макс. высоты */
-            }
+
+
+        /* Action buttons area - NO SCROLLING ON THIS CONTAINER */
+        .actions-column {
+            flex-grow: 1; /* Allow to take remaining vertical space */
+            flex-shrink: 0; /* Prevent from shrinking below content */
+            display: flex;
+            flex-direction: column;
+            padding-top: 0.5rem;
+            overflow: hidden; /* Crucial: no scroll on this container */
+        }
+        .actions-column h3 {
+            flex-shrink: 0; /* Prevent shrinking */
+            font-size: 1.1rem; /* Smaller for mobile portrait */
+            margin-bottom: 0.4rem; /* Compact margin */
         }
 
         .actions-buttons-grid {
             display: grid;
-            gap: 0.5rem; /* Use rem for gap */
-            padding-top: 0.5rem; /* Use rem for padding */
-            flex-grow: 1;
-            overflow-y: auto;
-            box-sizing: border-box;
-            -webkit-overflow-scrolling: touch;
-            grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile */
+            grid-template-columns: repeat(2, 1fr); /* Default to 2 columns for portrait mobile */
+            gap: 0.4rem; /* Compact gap */
+            flex-grow: 1; /* Allow grid to fill available space */
+            overflow: hidden; /* Crucial: no overflow-y:auto here */
+            padding-bottom: 0.2rem; /* Small padding at the very bottom */
         }
+        @media (min-width: 480px) { /* For wider phones (e.g., larger portrait phones) */
+            .actions-buttons-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns for wider portrait screens */
+                gap: 0.5rem;
+            }
+        }
+
 
         .action-button {
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            font-size: 1.1rem; /* Use rem for font size */
-            padding: 0.8rem 0.5rem; /* Use rem for padding */
+            font-size: 0.9rem; /* Adjusted for mobile portrait */
+            padding: 0.6rem 0.3rem; /* Compact padding */
             line-height: 1.2;
             text-align: center;
-            border-radius: 0.5rem; /* Use rem for border-radius */
-            border-bottom-width: 2px; /* Use px for border-width */
+            border-radius: 0.5rem;
+            border-bottom-width: 2px;
             transition: all 0.1s ease-in-out;
-            min-height: 50px; /* Ensure sufficient touch target size */
+            min-height: 50px; /* Good touch target size */
         }
-        
-        @media (min-width: 768px) {
-            .actions-buttons-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 columns for larger screens */
-                gap: 0.8vmin; /* Revert to vmin for larger screens */
-            }
+        @media (min-width: 480px) { /* Larger phones */
              .action-button {
-                font-size: 2.2vmin; /* Revert to vmin for larger screens */
-                min-height: 35px; /* Revert to original for larger screens */
+                font-size: 1rem;
+                min-height: 55px;
             }
         }
+
+
+        /* Make the "Начать заново" button take full width */
+        .action-button.col-span-full {
+            grid-column: 1 / -1; /* Spans all columns */
+            font-size: 1rem; /* Slightly larger text */
+            min-height: 55px; /* Slightly taller */
+        }
+        @media (min-width: 480px) { /* Larger phones */
+            .action-button.col-span-full {
+                font-size: 1.1rem;
+                min-height: 60px;
+            }
+        }
+
 
         .shake-animation { animation: shake 0.5s; }
         @keyframes shake {
@@ -272,72 +328,18 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
         
-        .action-button:active { transform: translateY(0.2rem); border-bottom-width: 1px; } /* Use rem/px */
+        .action-button:active { transform: translateY(0.1rem); border-bottom-width: 1px; }
         .action-button:disabled { background-color: #9ca3af; border-color: #4b5563; cursor: not-allowed; }
 
         #screamer-modal { animation-iteration-count: 5; }
         #screamer-image { width: 100%; height: 100%; object-fit: cover; }
 
-        @media (orientation: portrait) {
-            #orientation-overlay { display: flex; }
-            #app-container { display: none; }
-        }
-
-        /* Responsive Text Classes - using rem */
-        .responsive-text-xl { font-size: 1.1rem; }
-        .responsive-text-2xl { font-size: 1.3rem; }
-        .responsive-text-3xl { font-size: 1.6rem; }
-        .responsive-text-5xl { font-size: 2.5rem; }
-
-        /* Specific adjustments for larger screens if original vmin scaling is preferred for text */
-        @media (min-width: 768px) {
-            .responsive-text-xl { font-size: 3vmin; }
-            .responsive-text-2xl { font-size: 3.4vmin; }
-            .responsive-text-3xl { font-size: 4vmin; }
-            .responsive-text-5xl { font-size: 6vmin; }
-        }
-
-
-        #nina-sprite {
-            width: 100%; /* Make it responsive within its container */
-            max-width: 130px; /* Cap its max size */
-            height: auto; /* Maintain aspect ratio */
-            min-width: 80px; /* Minimum size */
-            min-height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.3); /* Use px for shadow */
-            border: 2px solid white; /* Use px for border */
-            margin-top: 0.5rem; /* Add some margin */
-        }
-        /* Adjust for smaller screens where image might be too big for stats column */
-        @media (max-width: 767px) {
-            #nina-sprite {
-                max-width: 100px;
-                min-width: 60px;
-                min-height: 60px;
-            }
-        }
-
-
-        #suitor-photo-container img {
-            width: 100%;
-            max-width: 100px;
-            height: auto;
-            min-width: 60px;
-            min-height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #f06292;
-            margin-top: 0.5rem;
-        }
-        @media (max-width: 767px) {
-            #suitor-photo-container img {
-                max-width: 80px;
-                min-width: 50px;
-                min-height: 50px;
-            }
-        }
+        /* Responsive Text Classes - Now based on dynamic html font-size (em units) */
+        /* These classes are mostly for consistency, main sizes are hardcoded in rem/px for layout */
+        .responsive-text-xl { font-size: 1.1em; } /* Example: used in child-info */
+        .responsive-text-2xl { font-size: 1.3em; } /* Example: used for Products header */
+        .responsive-text-3xl { font-size: 1.6em; } /* Example: used for Baba Nina header */
+        .responsive-text-5xl { font-size: 2.5em; } /* Example: used for main title */
 
 
         #main-menu {
@@ -353,31 +355,23 @@
         }
 
         #main-menu h1 {
-            font-size: 3.5rem; /* Larger font for main menu title */
+            font-size: 2.8rem; /* Adjusted for mobile menu */
             text-shadow: 2px 2px 4px #000, 0 0 10px #ff00de;
         }
         #main-menu button {
-            font-size: 1.5rem; /* Larger font for menu buttons */
+            font-size: 1.1rem; /* Adjusted for mobile menu buttons */
             padding: 0.8rem 1.5rem;
             border-bottom-width: 4px;
             border-radius: 0.5rem;
-        }
-        @media (max-width: 767px) {
-            #main-menu h1 {
-                font-size: 2.5rem;
-            }
-            #main-menu button {
-                font-size: 1.2rem;
-                padding: 0.6rem 1rem;
-            }
         }
     </style>
 </head>
 <body class="game-ui-background">
 
+    <!-- Orientation Overlay: Only shown if device is in landscape -->
     <div id="orientation-overlay">
         <h2 class="text-4xl font-lobster mb-4">Поверни экран!</h2>
-        <p class="text-2xl">Для игры в Симулятор Бабки Нинки нужна горизонтальная ориентация.</p>
+        <p class="text-2xl">Для игры в Симулятор Бабки Нинки нужна вертикальная ориентация.</p>
         <svg class="w-24 h-24 mt-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.667 0l3.181-3.183m-4.991-2.695v-2.695A8.25 8.25 0 008.25 6.75l-3.181 3.182" />
         </svg>
@@ -386,7 +380,7 @@
     <div id="app-container">
         <div id="main-menu" class="fixed inset-0 bg-cover bg-center z-40" style="background-image: url(https://avatars.mds.yandex.net/i?id=890ed37c2fe388ffbc0b78d0c3137796_l-4407893-270-images-thumbs&n=13)">
             <div class="w-full h-full bg-black bg-opacity-50 flex flex-col items-center justify-center p-8 text-center">
-                <h1 class="font-lobster text-white text-6xl" style="text-shadow: 2px 2px 4px #000, 0 0 10px #ff00de;">Симулятор Бабки Нинки</h1>
+                <h1 class="font-lobster text-white" style="text-shadow: 2px 2px 4px #000, 0 0 10px #ff00de;">Симулятор Бабки Нинки</h1>
                 <div class="mt-8 flex flex-col sm:flex-row gap-4">
                     <button onclick="startGame('normal', false)" class="text-2xl bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg border-b-4 border-red-900 active:border-b-2">
                         Новая игра
@@ -401,58 +395,64 @@
             </div>
         </div>
 
-        <div id="game-screen" class="hidden game-wrapper">
+        <div id="game-screen" class="hidden"> <!-- No flex-direction here, handled by game-container -->
             <div id="game-container">
-                <div class="text-center mb-2 border-b-4 border-dashed border-[#8B4513] pb-2">
-                    <h1 class="responsive-text-5xl font-lobster text-red-700" style="text-shadow: 1px 1px 2px #000;">Симулятор Бабки Нинки</h1>
-                    <p id="time-display" class="responsive-text-2xl text-gray-800 mt-1 font-semibold">День 1, 08:00</p>
+                <!-- Header -->
+                <div class="game-header text-center">
+                    <h1 class="font-lobster text-red-700" style="text-shadow: 1px 1px 2px #000;">Симулятор Бабки Нинки</h1>
+                    <p id="time-display" class="text-gray-800 font-semibold">День 1, 08:00</p>
                 </div>
-                <div class="game-grid-layout">
-                    <div class="stats-column">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <div>
-                                <h2 class="responsive-text-3xl font-bold text-gray-700 font-lobster">Баба Нина</h2>
+
+                <div class="main-content-area">
+                    <!-- Stats and Character -->
+                    <div class="stats-and-character">
+                        <div class="char-images-container">
+                            <h2 class="font-bold text-gray-700 font-lobster">Баба Нина</h2>
+                            <div class="nina-suitor-sprites"> <!-- NEW: Container for Nina and Suitor -->
+                                <div id="suitor-photo-container" class="hidden"></div> <!-- Suitor first -->
                                 <img id="nina-sprite" src="https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg" 
                                     onerror="this.onerror=null;this.src='https://placehold.co/200x200/d1c4e9/5a4a6b?text=Баба+Нина';"
                                     alt="Изображение Бабы Нины">
                             </div>
-                            <div id="suitor-photo-container" class="hidden"></div>
                         </div>
-                        <div class="w-full space-y-1 responsive-text-xl mb-2">
+                        <div class="stats-list">
                             <div><span>❤️</span> <strong>Энергия:</strong> <span id="energy-val">100</span></div>
                             <div><span>😂</span> <strong>Настроение:</strong> <span id="mood-val">70</span></div>
                             <div><span>🍲</span> <strong>Сытость:</strong> <span id="hunger-val">80</span></div>
                             <div><span>💩</span> <strong>Посрать:</strong> <span id="poop-val">0</span></div>
                             <div><span>💰</span> <strong>Лавэ:</strong> <span id="money-val">5000</span> руб.</div>
-                        </div>
-                        <div class="w-full mt-2 pt-2 border-t-2 border-[#d4c4b0]">
-                            <h3 class="responsive-text-2xl font-bold text-center text-gray-700 mb-1">Продукты 🛒</h3>
-                            <div id="products-count" class="text-center responsive-text-xl font-semibold bg-white p-1 rounded border border-gray-300">0 шт.</div>
-                        </div>
-                        <div id="child-info" class="w-full mt-1 text-center"></div>
-                    </div>
-                    <div class="actions-column">
-                        <div id="message-box">
-                            <p class="text-lg text-gray-700">> падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂</p>
-                        </div>
-                        <div class="flex-grow">
-                            <h3 class="responsive-text-3xl font-bold text-gray-700 mb-2 text-center">Чё делать-то будем, ёпта?</h3>
-                            <div class="actions-buttons-grid">
-                                <button onclick="performAction('cook')" class="action-button bg-green-600 hover:bg-green-700 border-green-800 text-white font-bold">Сварганить жратву</button>
-                                <button onclick="performAction('sleep')" class="action-button bg-blue-600 hover:bg-blue-700 border-blue-800 text-white font-bold">Завалиться спать</button>
-                                <button onclick="performAction('watch_tv')" class="action-button bg-purple-600 hover:bg-purple-700 border-purple-800 text-white font-bold">Пялиться в телек</button>
-                                <button onclick="performAction('monetka')" class="action-button bg-orange-500 hover:bg-orange-600 border-orange-700 text-white font-bold">Сгонять в 'Монетку'</button>
-                                <button onclick="performAction('gossip')" class="action-button bg-pink-500 hover:bg-pink-600 border-pink-700 text-white font-bold">Потрещать с Тимофеевной</button>
-                                <button onclick="performAction('tiktok')" class="action-button bg-black hover:bg-gray-800 border-gray-900 text-white font-bold">Записать видос</button>
-                                <button onclick="performAction('stream')" class="action-button bg-red-600 hover:bg-red-700 border-red-800 text-white font-bold">Запустить стрим</button>
-                                <button onclick="performAction('call_sergey')" id="sergey-button" class="action-button bg-yellow-500 hover:bg-yellow-600 border-yellow-700 text-white font-bold" disabled>Позвать Серёгу</button>
-                                <button onclick="performAction('poop')" class="action-button bg-amber-800 hover:bg-amber-900 border-amber-950 text-white font-bold">ПОСРАТЬ</button>
-                                <button onclick="performAction('fart')" class="action-button bg-lime-600 hover:bg-lime-700 border-lime-800 text-white font-bold">Пердануть</button>
-                                <button onclick="performAction('suitors')" id="suitor-button" class="action-button bg-rose-500 hover:bg-rose-600 border-rose-700 text-white font-bold">Искать жениха</button>
-                                <button onclick="manualSave()" class="action-button bg-cyan-600 hover:bg-cyan-700 border-cyan-800 text-white font-bold">Сохранить</button>
-                                <button onclick="forceRestart()" class="action-button bg-red-800 hover:bg-red-900 border-red-950 text-white font-bold col-span-full">Начать заново</button>
+                            <div id="products-section">
+                                <h3 class="font-bold text-gray-700">Продукты 🛒</h3>
+                                <div id="products-count" class="text-center font-semibold bg-white p-0.5 rounded border border-gray-300">0 шт.</div>
                             </div>
+                            <div id="child-info" class="mt-1"></div>
                         </div>
+                    </div>
+
+                    <!-- Message Box -->
+                    <div id="message-box">
+                        <p class="text-gray-700">> падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="actions-column">
+                    <h3 class="font-bold text-gray-700 text-center">Чё делать-то будем, ёпта?</h3>
+                    <div class="actions-buttons-grid">
+                        <button onclick="performAction('cook')" class="action-button bg-green-600 hover:bg-green-700 border-green-800 text-white font-bold">Сварганить жратву</button>
+                        <button onclick="performAction('sleep')" class="action-button bg-blue-600 hover:bg-blue-700 border-blue-800 text-white font-bold">Завалиться спать</button>
+                        <button onclick="performAction('watch_tv')" class="action-button bg-purple-600 hover:bg-purple-700 border-purple-800 text-white font-bold">Пялиться в телек</button>
+                        <button onclick="performAction('monetka')" id="monetka-button" class="action-button bg-orange-500 hover:bg-orange-600 border-orange-700 text-white font-bold">Сгонять в 'Монетку'</button>
+                        <button onclick="performAction('gossip')" class="action-button bg-pink-500 hover:bg-pink-600 border-pink-700 text-white font-bold">Потрещать с ПОДРИЩЕКАМИ</button>
+                        <button onclick="performAction('tiktok')" class="action-button bg-black hover:bg-gray-800 border-gray-900 text-white font-bold">Записать видос</button>
+                        <button onclick="performAction('stream')" class="action-button bg-red-600 hover:bg-red-700 border-red-800 text-white font-bold">Запустить стрим</button>
+                        <button onclick="performAction('call_sergey')" id="sergey-button" class="action-button bg-yellow-500 hover:bg-yellow-600 border-yellow-700 text-white font-bold" disabled>Позвать Серёгу</button>
+                        <button onclick="performAction('poop')" id="poop-button" class="action-button bg-amber-800 hover:bg-amber-900 border-amber-950 text-white font-bold">ПОСРАТЬ</button>
+                        <button onclick="performAction('fart')" class="action-button bg-lime-600 hover:bg-lime-700 border-lime-800 text-white font-bold">Пердануть</button>
+                        <button onclick="performAction('suitors')" id="suitor-button" class="action-button bg-rose-500 hover:bg-rose-600 border-rose-700 text-white font-bold">Искать жениха</button>
+                        <button onclick="manualSave()" class="action-button bg-cyan-600 hover:bg-cyan-700 border-cyan-800 text-white font-bold">Сохранить</button>
+                        <button onclick="performAction('catch_subscribers')" id="catch-subscribers-button" class="action-button bg-brown-700 hover:bg-brown-800 border-brown-900 text-white font-bold" style="background-color: #8B4513; border-color: #5A2D0C;" disabled>Отлов подрищиков на котлетки</button>
+                        <button onclick="forceRestart()" class="action-button bg-red-800 hover:bg-red-900 border-red-950 text-white font-bold col-span-full">Начать заново</button>
                     </div>
                 </div>
             </div>
@@ -501,7 +501,7 @@
 <script>
     const PHRASES = {
         fart: [
-            "ух бля! 💨💨 как галубь мира вылител 🕊️🕊️", "палегче стала... 😌😌", "музычка! 🎶🎶", "ароматна... 🌸🌸🤣🤣", "надеюсь никто ни услышал... 🤫🤫 а если и услышал то похуй 👍", "эта я ни перднула эта душа плачит 😭😂", "ой... 😳", "выпустила демона 😈😈", "мАя падливка 🔥🔥🔥", "это вам за всё харошее! 👍💨", "прочистила дымоход 💨",
+            "ух бля! �💨 как галубь мира вылител 🕊️🕊️", "палегче стала... 😌😌", "музычка! 🎶🎶", "ароматна... 🌸🌸🤣🤣", "надеюсь никто ни услышал... 🤫🤫 а если и услышал то похуй 👍", "эта я ни перднула эта душа плачит 😭😂", "ой... 😳", "выпустила демона 😈😈", "мАя падливка 🔥🔥🔥", "это вам за всё харошее! 👍💨", "прочистила дымоход 💨",
             "пёрнула так, что стекла задрожали 😱💥", "ну вот, теперь можно и полетать 🎈💨", "аж легче стало, будто камень с души упал... и с жопы тоже 😂🪨", "главное, чтоб соседи не вызвали МЧС на запах 🚒🤢", "это не пердёж, это эхо моего величия! ✨🔊", "мои газы - оружие массового поражения ☢️💨", "какая прелесть, аж воздух вокруг заиграл новыми красками 🎨💨", "хотела пукнуть тихо, но вышло как всегда - эпично! 🚀", "мой пердёж - это отдельный вид искусства, поймут не все 🖼️💨", "чтобы не лопнуть от злости, лучше лопнуть от газов 🤣💥"
         ],
         suitors: [
@@ -514,7 +514,7 @@
         ],
         child_dead: [
             "мой {name} сдох... 😭 ну и хуй с ним 👍 па крайней мере прадукты жрать перестал... и на вкус как курятина 🍗🍗😋😋", "карочи... {name} кончился... 💀💀 пашол на пельмени... вкусна 🥟🥟🤤🤤",
-            "ну вот, одним нахлебником меньше. Покойся с миром, мой маленький обжора 🙏🍽️", "земля ему пухом... и компостом! 🌱💀", "это жизнь, ёпта. Не все доживают до пенсии 🤷‍♀️💸", "слезы? Какие слезы? Это просто лук режу 🧅😢", "зато теперь можно не делиться продуктами! 😈🍗", "печально, конечно, но холодильник теперь мой! 🧊😋", "ну, по крайней мере, он не успел мне всю пенсию проесть 😌💰", "говорят, дети – цветы жизни. А этот оказался засохшим гербарием 🥀💀", "главное, что не мучился... ну, я надеюсь 😅", "что ж, природа берёт своё. Бабка Нина – следующая? 🤔", "а я уже привыкла к его крикам по ночам... теперь тишина, аж непривычно 🤫", "может, это знак, что пора заводить собаку? 🐕", "сразу видно, не в меня пошел, я-то живучая! 💪👵", "так и запишем: выбыл из игры. Следующий! 🔄", "повезло, что хоть не сильно успел нагадить в жизни... и в штаны 💩"
+            "ну вот, одним нахлебником меньше. Покойся с миром, мой маленький обжора 🙏🍽️", "земля ему пухом... и компостом! 🌱💀", "это жизнь, ёпта. Не все доживают до пенсии 🤷‍♀️💸", "слезы? Какие слезы? Это просто лук режу 🧅😢", "зато теперь можно не делиться продуктами! 😈🍗", "печально, конечно, но холодильник теперь мой! 🧊😋", "ну, по крайней мере, он не успел мне всю пенсию проесть 😌💰", "говорят, дети – цветы жизни. А этот оказался засохшим гербарием 🥀💀", "главное, что не мучился... ну, я надеюсь 😅", "что ж, природа берёт своё. Бабка Нина – следующая? 🤔", "а я уже привыкла к его крикам по ночам... теперь тишина, аж непривычно🤫", "может, это знак, что пора заводить собаку? 🐕", "сразу видно, не в меня пошел, я-то живучая! 💪👵", "так и запишем: выбыл из игры. Следующий! 🔄", "повезло, что хоть не сильно успел нагадить в жизни... и в штаны 💩"
         ],
         wake_up: [
             "падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂", "какова хрена так рана ⏰⏰⏰ апять этат будильник ебучий арёт 🤬🤬🤬", "так фстали атряхнулись и пашли наху... тоесть па дилам 🚶‍♀️🚶‍♀️🚶‍♀️🤣🤣", "снова утра 🌅🌅 сдохнутьбы да пенсию нада палучить 💸💸👍", "глаза прадрала а спина ни разгибаеца 👵👵👵 старость ни радасть а пиздес 😫😫😅", "кто я?? где я?? 🧐🧐 а я старая бабка в сваей халупе. заибись. 😂👍", "сонце в ибало светит ☀️😎😎 занавески нада была платнее задернуть 😡😡", "ищо адин день в этам дурдоме 🤪🤪 ну с богом или с чортом похуй 🙏😈🤣", "хочица лижать и пливать в паталок 💦💦 но нада итти и виршить виликие дила. например пасрать. 🚽💩😂", "праснулась но ни ачнулась 😵‍💫😵‍💫 дайте водки 🍶🍶 плиз 🙏😂", "фстать с кравати целый подвиг для маей тушы 🐘🐘", "апять спина болит и ноги гудят... жирная жизнь 😫😫",
@@ -542,11 +542,25 @@
         ],
         monetka: [
             "НАКУПИЛА В МАНЕТКИ ПАКЕТ ГАВНА 😂😂😂 ЩАС БУДУ РАСПАКОВАЧКУ СНИМАТЬ 📦📦", "спустила пол пенсии на какуюто хуйню 💸💸 зато хата полная 🤣🤣", "тилежка была полная 🛒🛒 типерь халадильник полный 🧊🧊 заибись 👍", "патратила кучу бабла 🤑🤑 зато теперь есть чо жрать... наверна 🤔🤔", "взяла всё по акции 'два по цене трёх' 👍👍🤣🤣 я бизнисменша 💼💼", "касирша на миня сматрела как на дуру 👀👀 а я проста галодная была 🤷‍♀️🤷‍♀️", "притащила домой 10 пакетав 🛍️🛍️🛍️ щас здохну пака разбиру 🥵🥵", "закупилась так штоб месяц из дома ни выхадить 🏠🏠👍👍", "у миня теперь есть гречка, сахар, соль... 🧂🍚 осталось пережить ядерную вайну ☢️☢️🤣🤣", "я вашпето на диете... была... до манетки 😂😂😂", "нада тащить сваю тушу в магазин... лень... но жрать хочица 😩😩",
-            "опять в эту 'Монетку', как на каторгу! ⛓️🛒", "главное, не забыть пакеты, а то придется все в трусах нести 🤦‍♀️🩲", "там опять эти молодые без масок ходят, зараза! 😷😡", "если бы 'Монетка' была храмом, я бы была там настоятельницей 🙏💰", "купила всего понемногу, а денег как будто за самолёт заплатила ✈️💸", "вот бы мне своего личного грузчика, а то спина отваливается 😥🏋️‍♀️", "на кассе опять бабка передо мной все мелочь считает, убила бы! 🤬", "главное - взять все, что по акции, а потом разберемся, зачем оно мне 🤷‍♀️🛍️", "а я думала, что только до пенсии не доживу, а тут и до 'Монетки' бы дойти 😅", "потратила все деньги на еду, теперь придётся без света сидеть 💡💸", "зато теперь холодильник полный, можно неделю не выходить! 🧊🏠", "кассирша опять нахамила, но я ей в ответ так рыгнула, что она охуела 🤢🤫", "в 'Монетке' как на войне, кто успел, тот и съел! ⚔️🍔", "ох уж эти тележки, сами едут, куда хотят, а я за ними бегаю 🛒🏃‍♀️", "каждый поход в магазин - это целое приключение, особенно с моей памятью 🧠"
+            "опять в эту 'Монетку', как на каторгу! ⛓️🛒", "главное, не забыть пакеты, а то придется все в трусах нести 🤦‍♀️🩲", "там опять эти молодые без масок ходят, зараза! 😷😡", "если бы 'Монетка' была храмом, я бы была там настоятельницей 🙏💰", "купила всего понемногу, а денег как будто за самолёт заплатила ✈️💸", "вот бы мне своего личного грузчика, а то спина отваливается 😥🏋️‍♀️", "на кассе опять бабка передо мной все мелочь считает, убила бы! 🤬", "главное - взять все, что по акции, а потом разберемся, зачем оно мне 🤷‍♀️🛍️", "а я думала, что только до пенсии не доживу, а тут и до 'Монетки' бы дойти 😅", "потратила все деньги на еду, теперь придётся без света сидеть 💡💸", "зато теперь холодильник полный, можно неделю не выходить! 🧊🏠", "касирша опять нахамила, но я ей в ответ так рыгнула, что она охуела 🤢🤫", "в 'Монетке' как на войне, кто успел, тот и съел! ⚔️🍔", "ох уж эти тележки, сами едут, куда хотят, а я за ними бегаю 🛒🏃‍♀️", "каждый поход в магазин - это целое приключение, особенно с моей памятью 🧠"
         ],
-        gossip: [
-            "пайду патрещу с тимафеевной старой перечницей 👵🌶️ узнаю хто с кем спит и хто шо украл 😏😏", "тимафеевна выхади подлая душа!! 🗣️🗣️ есть разгавор. нада кости пиримыть всиму падьезду 🦴🦴😂", "ща эта карга мне апять будит пра сваи балячки заливать 🤧🤒 ну ладна паслушаю хули делать 🤷‍♀️🤷‍♀️", "абсудили с тимафеевной праститутку с третива этажа 💃💃 гаварит цены падняла. савсем ахуела 🤬🤬", "тимафеевна видила как серёга ночю мусар вынасил 🗑️🗑️ в трусах. навернае апять пад чюто двер срать хадил 💩💩🤣", "гаварит у чисткова новый ухажор 👮‍♂️❤️‍🔥 интиресна хто этат нисчасный?? 🤔🤔", "сплетни - эта как семечки 🌻🌻 начнёш - ни астановишся 🤪🤪", "мы с тимафеевной - меснае фсб 🕵️‍♀️🕵️‍♀️ знаем фсё пра фсех 💪💪", "пиримыли кости фсем каму можна. и каму нельзя - тоже 👍👍😂😂", "после разгавора с тимафеевной хочица пайти и памыца 🚿🚿 но зато весела 🤣🤣",
-            "Тимафеевна - моя главная информаторка, она знает всё и обо всех 🤫📰", "пошла к Тимафеевне, как в библиотеку - за новыми знаниями о соседях 📚", "главное, не забыть, что мне самой надо приукрасить свои сплетни 😉✨", "сколько жизней было разрушено на этой скамейке! 💔 bench", "Тимафеевна без сплетен, как я без пенсии - никуда! 💸", "надо же, а я думала, что только я такая любопытная 🧐", "сплетни - это наш бабский фитнес, язык качаем 👅💪", "Тимафеевна опять жалуется на свой радикулит, а я ей про геморрой 🤦‍♀️", "главное, не проболтаться о своих похождениях, а то потом весь подъезд знать будет 🤫", "а Тимафеевна, оказывается, умеет так материться, что Серёга позавидует 🤬", "после наших разговоров, чувствую себя помолодевшей на 20 лет... но только на 20 секунд ⏳👵", "сплетни - это как наркотик, один раз попробуешь, и всё, подсел 💊", "сколько правды в сплетнях? 10%, остальное - моё творчество 😂", "пора обсудить, кто опять в лифте нагадил... по почерку Серёга! 💩", "зато теперь знаю, что у тети Зины новый мужик, а у дяди Васи - новая любовница! 🔥"
+        gossip: [ /* Теперь это "ПОТРЕЩАТЬ С ПОДРИЩЕКАМИ" */
+            "ТАК-С, ЧЁ ТАМ ПОДРИЩЕКИ С ХЕЙТАРАМИ РАССКАЗЫВАЮТ? 🧐👂 НАДА ФСЕ СУКИ УЗНАТЬ!! 😈",
+            "МОИ ПОДРИЩЕКИ - ЗОЛОТО! 💰💰 ВСЁ ОБО ВСЁМ ДОЛОЖАТ, А ХЕЙТАРОВ - К БАБУШКЕ НА УРОК! 📚🤬",
+            "СЛАВА БОГУ, ЕСТЬ ПОДРИЩЕКИ! 😍 БЕЗ НИХ СКУЧНО БЫЛО БЫ ПЕРДЕТЬ В ОДИНОЧЕСТВЕ 💨👵",
+            "ЧЁ ТАМ ВЛАДИМИРОВНА ПИСАЛА? 🙄 АГА, 'НИНА ВЫ АЛКАШКА И МАРИНЕТОЧКА' 😂💐💐💐",
+            "ОЙ, ХЕЙТАРОВ НАБЕЖАЛО, КАК ТАРАКАНОВ! 🪳🪳 НУ НИЧО, ИМ ТОЖЕ ВЫСЕРУ ПРАВДУ МАТКУ! 💩💯",
+            "МОИ ПОДРИЩЕКИ НАШЛИ НОВУЮ ТЕМУ ДЛЯ СРАЧА! 💥 ПОРЕЩУ ВСЕХ НА КОТЛЕТЫ! 🔪🥩😂",
+            "НИЧТО ТАК НЕ РАДУЕТ БАБКУ НИНУ, КАК СВЕЖИЕ СПЛЕТНИ ОТ ПОДРИЩЕКОВ! 🥰 gossips",
+            "ПРИВЕТЫ МОИМ ЛЮБИМЫМ ХЕЙТАРАМ! 👋👋 ВЫ СДЕЛАЛИ МОЙ ДЕНЬ! 🤣🤣🤣",
+            "НИНА ВЛАСОВА АЛЕКСАНДРОВНА - ЭТО СИЛА, ЁПТА! 💪 А ВЫ, ХЕЙТАРЫ - НИКТО! 💩",
+            "НАДО БЫ С НИМИ ПОТРЕЩАТЬ, МОЖЕТ НОВЫЙ ВЫПУСК 'РЕВИЗОРРО' СНИМЕМ НА ЮТУБЕ! 🎥",
+            "ПОДРИЩЕКИ, МОИ ЗОЛОТЫЕ! НЕ ЗАБУДЬТЕ, КТО ВАША КОРОЛЕВА! 👑😂",
+            "ОБСУДИЛИ С НИМИ ВСЕХ, КТО ПОСМЕЛ ПЕРЕЙТИ ДОРОГУ НИНЕ ВЛАСОВОЙ! ⚔️",
+            "ЧУВСТВУЮ, СЕГОДНЯ БУДЕТ ВЕСЁЛЫЙ СРАЧ В КОММЕНТАХ! 🔥🔥",
+            "СПАСИБО, ПОДРИЩЕКИ, ЗА ДОЗУ ЕЖЕДНЕВНОЙ ДРАМЫ! 🎭🤣",
+            "А ВЫ ВСЁ НИНИ ЗАВИДУЕТЕ, НИЩЕБРОДЫ? 🤑 УЧИТЕСЬ КАК ЖИТЬ НАДО! 👍💯",
+            "ПУСТЬ ХЕЙТЕРЫ ЗАХЛЕБНУТСЯ СВОЕЙ ЗАВИСТЬЮ! 🤢 ПОДРИЩЕКИ - ВПЕРЕД! 🚀"
         ],
         tiktok: [
             "время для тектока! 💃💃 ща пакажу маладьожи как нада жопай тристи! 🍑🍑", "записываю ачиридной шидевр 🎬🎬 я звизда а вы все - гавно! 🌟💩", "танцую пад маргенштерна 🎶🎶 штоб он сдох урод 💀💀", "делаю апзор на прасрочиную калбасу 🌭🤢 будит хить 👍👍", "паказываю как правильна ругаца 🗣️🤬 учу маладьож жить 💪💪", "мой акаунт в тектоке папулярнее чем иисус. навернае. 🙏🤣", "снимаю тренд где маску с лица снимают 🎭🎭 а у миня там ищо адна маска 😂😂😂", "нада бы хайпануть 🚀🚀 может галышом сплясать? 💃🔞", "маи видосы - эта искуства 🎨🎨 а хто ни сагласен - тот пидарас 👍👍", "устраиваю танцевальный батл с тараканами 💃🕺🐞 пабеждаит дружба 😂", "снимаю танец живота 💃💃 живот канешна бальшой зато какой есть 😂😂😂", "пытаюсь влезть в старое платье для видоса... трещит по швам 👗💥🤣🤣",
@@ -554,11 +568,11 @@
         ],
         stream: [
             "ВРУБАЮ СТРИМ! 🔴 ща данаты палетят 💸💸 гатовьте бабки нищеброды! 🤑🤑", "привет маи патпищики-далбаёбы! 👋👋 бапка в эфире кидайте маниту! 🪙🪙", "начинаим трансляцыю из маиво бапкина бункера. задавайте вапросы суки 🧐🗣️", "хто ни заданатит - тот лох. и серёга. 👍👍", "сабираю на новую вставную челюсь 🦷🦷 и на пива 🍺 кидайте бабки ни жмотьтесь 🙏🙏", "атвичаю на ваши тупые вапросы 🤔 да я старая. нет я ни скора сдохну 👵💪", "за данат в 1000 рублей пакажу сваю кошку 🐈🐈 за 5000 - станцую 💃💃", "этат стрим изминит вашу жизнь 🙏🙏 вы паймёте што вы - ничтожиства 💩💩", "спасиба за данат урод 👍💸 куплю сибе на них гроб ⚰️. шучу. куплю водки 🍶🤣", "кантент падъехал 🚚🚚 сматрите и ахуивайте 👀👀",
-            "В прямом эфире! Все, кто меня смотрит, готовьте почки на продажу! 💰", "Не забываем ставить лайки и подписываться, иначе приду к вам ночью! 👻", "Стримлю из своей резиденции, где каждый уголок пропитан мудростью и пылью 🏠👵", "Вопросы только по существу! Про Серёгу не спрашивать! 🤬", "А вот и первый донат! Спасибо, милый, пусть тебе вернётся в 10 раз больше, но не деньгами 😂", "Мой голос проникает в каждую душу, особенно в ту, что любит попердеть 💨", "За донат в 100 рублей обещаю не материться... почти! 😇", "Стримлю, пока не выгонят из интернета! 💪🌐", "Приготовьте свои уши, сейчас будет самый горячий контент! 🔥👂", "Мои зрители - самые лучшие... если не считать тех, кто не донатит 😤", "Если меня забанят, я приду к вам домой и заставлю слушать мои песни! 🎤🏡", "Вот так вот, бабкины стримы - это вам не хухры-мухры! 😉", "Донатьте, а то я сейчас начну рассказывать про свои болячки, будете плакать! 😥", "Мой стрим - это лекарство от скуки и депрессии, только без побочных эффектов! 💊😂", "Кто не со мной, тот под шконкой сидит и завидует! 🤫"
+            "В прямом эфире! Все, кто меня смотрит, готовьте почки на продажу! 💰", "Не забываем ставить лайки и подписываться, иначе приду к вам ночью! 👻", "Стримлю из своей резиденции, где каждый уголок пропитан мудростью и пылью 🏠👵", "Вопросы только по существу! Про Серёгу не спрашивать! 🤬", "А вот и первый донат! Спасибо, милый, пусть тебе вернётся в 10 раз больше, но не деньгами 😂", "Мой голос проникает в каждую душу, особенно в ту, что любит попердеть 💨", "За донат в 100 рублей обещаю не материться... почти! 😇", "Стримлю, пока не выгонят из интернета! 💪🌐", "Приготовьте свои уши, сейчас будет самый горячий контент! 🔥👂", "Мои зрители - самые лучшие... если не считать тех, кто не донатит😤", "Если меня забанят, я приду к вам домой и заставлю слушать мои песни! 🎤🏡", "Вот так вот, бабкины стримы - это вам не хухры-мухры! 😉", "Донатьте, а то я сейчас начну рассказывать про свои болячки, будете плакать! 😥", "Мой стрим - это лекарство от скуки и депрессии, только без побочных эффектов! 💊😂", "Кто не со мной, тот под шконкой сидит и завидует! 🤫"
         ],
         call_sergey: [
             "АЛЁ СЕРЁГА ЭТА НИНКА! 📞📞 У МИНЯ ТУТ ВСЁ СЛАМАЛАСЬ ПРИХАДИ СКАРЕЕ!! 🖥️💥", "серёжаааааа памагиииии 😭🙏 мой кампуктер ни работаит 😡😡", "этот урод арешкин апять нужен... 😒😒 щас пазаву иво... 🚶‍♂️", "СЕРГЕЙ!! 🗣️🗣️ ТУТ ДЕЛА НА ПОЛПЕНСИИ!! 💸💸 ЗАХАДИ!!", "пришол... 😒😒 сматрит... чота там тыкает... 🧐🧐", "сказал 'ща всё будит' и папрасил денег... 💸💸 урод.", "капался там два часа... 🕑🕑 я чуть ни сдохла ат скуки 😴😴", "ВРОДЕ ПАЧИНИЛ!! 🥳🥳 НО СПИЗДИЛ СУКА ПОЛ ПЕНСИИ!!! 🤬🤬🤬", "ну всё работает... пака... 😒😒 до следущева раза... 😡", "спасиба серёжа... штоб ты сдох... 🙏💀🤣🤣",
-            "Серёга, мать твою, ты где?! Опять пропал, как понос в степи! 💩", "Компьютер не работает, и я не могу смотреть Тикток! Это трагедия! 😭", "Серёга, приходи, я тебе пирожков напекла... с сюрпризом 😉", "Без Серёги я как без рук... и без ног, и без головы 🤦‍♀️", "Он, конечно, урод, но без него никуда 🤷‍♀️", "Обещал прийти 'через пять минут'... жду уже третий час! ⏳", "Этот Серёга постоянно что-то ломает, а потом сам же 'чинит' за мои деньги 💸", "Надо бы ему уже зарплату платить, а то он совсем оборзел 🤑", "Я ему сейчас так наору, что он в штаны наложит! 🗣️💩", "Серёга, если ты это слышишь, знай - я тебя ненавижу, но люблю! ❤️‍🩹", "Пришёл, потыкал пальцем в монитор, сказал 'готово' и убежал. Гений! 🤓", "Главное, чтобы он не увидел мою заначку, а то потом и кран не починит 🤫", "А вот и он, мой спаситель... или разоритель? 🤔", "Ну всё, теперь можно снова смотреть Малахова, спасибо, Серёга! 📺🥳", "Он хоть и Серёга, но свою работу знает... иногда. 😂"
+            "Серёга, мать твою, ты где?! Опять пропал, как понос в степи! 💩", "Компьютер не работает, и я не могу смотреть Тикток! Это трагедия! 😭", "Серёга, приходи, я тебе пирожков напекла... с сюрпризом 😉", "Без Серёги я как без рук... и без ног, и без головы 🤦‍♀️", "Он, конечно, урод, но без него никуда 🤷‍♀️", "Обещал прийти 'через пять минут'... жду уже третий час!⏳", "Этот Серёга постоянно что-то ломает, а потом сам же 'чинит' за мои деньги 💸", "Надо бы ему уже зарплату платить, а то он совсем оборзел 🤑", "Я ему сейчас так наору, что он в штаны наложит! 🗣️💩", "Серёга, если ты это слышишь, знай - я тебя ненавижу, но люблю! ❤️‍🩹", "Пришёл, потыкал пальцем в монитор, сказал 'готово' и убежал. Гений! 🤓", "Главное, чтобы он не увидел мою заначку, а то потом и кран не починит 🤫", "А вот и он, мой спаситель... или разоритель? 🤔", "Ну всё, теперь можно снова смотреть Малахова, спасибо, Серёга! 📺🥳", "Он хоть и Серёга, но свою работу знает... иногда. 😂"
         ],
         tech_broken: { 
             tv: "ТЕЛЕК СДОХ!! 📺💥 ни паказывает малахова!! катострофа!! 😱😱", 
@@ -567,7 +581,9 @@
             internet: "ИНТЕРНЕТ СДОХ!! 🌐❌ как я типерь буду ругаца в каментах?! 🤬🤬",
             fridge: "ХОЛОДИЛЬНИК СДОХ!! 🧊🚫 всё пропало, шеф, всё пропало! 😭🥩",
             washing_machine: "СТИРАЛКА СДОХЛА!! 🧺💦 теперь придёца руками стирать... или Серёге отдать! 🤦‍♀️",
-            toilet: "УНИТАЗ СЛОМАЛСЯ!! 🚽💥 как я типерь срать буду?!! Это пиздец! 😱💩"
+            toilet: "УНИТАЗ СЛОМАЛСЯ!! 🚽💥 как я типерь срать буду?!! Это пиздец! 😱💩",
+            toilet_repair: "ТУАЛЕТ ЧИНИТ ОЛЕГ... 👨‍🔧🚽 ЗАНЯТ, ПОКА НЕ ТРОГАТЬ! 😤💨",
+            toilet_fixed: "ОЛЕГ ПОЧИНИЛ ТУАЛЕТ! 💪🚽 ТЕПЕРЬ МОЖНА СНОВА СРАТЬ! 🥳💩"
         },
         no_money: [
             "бабок нет! 😥 голяк! жди пенсию 👵", "деньги кончились блять! 😭 придёца сасать лапу 🐾🐾", "нищета ибаная! 🤬🤬 где маё лавэ? 💸💸", "в кармане - вошь на аркане. и то дохлая 🦗🦗", "нада бы аграбить банк 🏦💰 но лень 😴😴", "магу прадать почку. или душу. што дароже? 🤔🤔", "денег нет но вы диржитесь. и я падержусь. за хуй 👍👍🤣🤣", "пайду пабираца 🙏🙏 падайте старой бальной женщине на 'балтику 9' 🍺🍺", "финансы поют рамансы 🎶🎶 причём очень грусные 😥😥", "я ни бедная. я эканомная. очень сука эканомная 👍👍",
@@ -596,8 +612,60 @@
             money: "померла от нищеты 💸💀 вот так бывает, когда бабок нет 😥",
             products: "сдохла от голода 🍖💀 продукты кончились, и жизнь тоже 😭",
             child: "ребенок сдох, и бабка тоже 👶💀 не вынесла такого позора 💔",
-            suitor: "жених сбежал, и бабка вслед за ним 🏃‍♂️💀 от тоски померла 💔"
-        }
+            suitor: "жених сбежал, и бабка вслед за ним 🏃‍♂️💀 от тоски померла 💔",
+            toilet: "туалет засорился насмерть 🚽💀 бабка не выдержала вони и ушла в мир иной 🤢 RIP"
+        },
+        catch_subscribers: [ /* Новые фразы для "Отлов подрищиков на котлетки" */
+            "ТАК-С, БАБКИ НЕТ, ПОДРИЩЕКИ - ВЫБОР ОЧЕВИДЕН! 😈🔪 НА КОТЛЕТЫ ИХ, НА КОТЛЕТЫ! 🥩😂",
+            "ГОЛОД НЕ ТЁТКА, А НИНА - ВООБЩЕ БАБКА! 👵🍽️ ПОШЛА НА ОХОТУ ЗА ПОДРИЩЕКАМИ! 🏹",
+            "ЧЁ, ДЕНЕГ НЕТ? 😭 НУ ЧТО Ж, ПОДРИЩЕКИ, ВЫ НАКАНЕЦТО ПРИНЕСЁТЕ ПОЛЬЗУ! 💪",
+            "ЭТО НИ УБИЙСТВО, ЭТО УТИЛИЗАЦИЯ! ♻️ А КОТЛЕТКИ ВКУСНЫЕ, НЕ ОБМАНУ! 😋",
+            "ОЙ, КАКИЕ ЖИРНЫЕ ПОДРИЩЕКИ! 🐖 ПРЯМ СВЕЖАК НА ОБЕД! 🤤",
+            "РАЗ В НЕДЕЛЮ МОЖНА. ЭТО ЖЕ ДЛЯ ВЫЖИВАНИЯ, А НЕ ОТ ХОРОШЕЙ ЖИЗНИ! 🤷‍♀️",
+            "ГЛАВНОЕ, ШТОБЫ ХЕЙТАРЫ НИ УЗНАЛИ, ЧТО Я ИХ ЕМ! 🤫🤫",
+            "НУ ВСЁ, ПОБЕЖАЛА ЗА СЕТЬЮ! 🎣 ПОПАДЁТСЯ, НЕ СБЕЖИТ! 🏃‍♂️",
+            "МЯСО ДОРОГОЕ, А ПОДРИЩЕКОВ - ВАЛОМ! 🤑 БИЗНЕС, ЁПТА! 💼",
+            "ЕСЛИ ЗАВТРА ПРОПАДЁТ ПАРА ПОДРИЩЕКОВ, ЭТО НЕ Я, ЭТО КОШКИ! 🐈‍⬛🐈‍⬛",
+            "ВИТАМИНЫ ОТ ПОДРИЩЕКОВ - САМЫЕ ЛУЧШИЕ! 💯🤣",
+            "НЕКОТОРЫЕ НА РАБОТУ ХОДЯТ, А Я НА ОХОТУ! 🐅 🥩",
+            "А ВЫ ДУМАЛИ, Я ШУЧУ ПРО КОТЛЕТКИ?! 😈 НИНА ВЛАСОВА СЛОВ НА ВЕТЕР НЕ БРОСАЕТ! 💪",
+            "ОТЛОВИЛА САМОГО ЖИРНОГО И НАГЛОГО ХЕЙТАРА! 😡 ПОШЁЛ НА ПЛОВ! 🍚",
+            "ТОЛЬКО ЧТОБЫ НИКТО НЕ ВИДЕЛ, А ТО ПОСАДЮТ! 🤫👮‍♀️"
+        ],
+        toilet_clogged: [ /* Новые фразы для засора туалета */
+            "БЛЯЯЯЯТЬ! 🤬🤬 ТУАЛЕТ ЗАСРАЛСЯ!!! 🚽💩 ЭТО ВСЁ СЕРЁГА ИЛИ Я ТАК МНОГО ЖРУ?! 😡",
+            "ОЛЕЕЕЕГ! 🗣️ СУКА, ВЫХОДИ! ТВОЙ ЧАС НАСТАЛ! 👨‍🔧🚽",
+            "ЧТО ЗА ДЕНЬ? 😠 СНАЧАЛА ГОВНО ВЫПРЕТ, ТЕПЕРЬ ТУАЛЕТ НИ РАБОТАЕТ! 😩",
+            "НУ ВСЁ, ПИЗДЕЦ МОЕЙ ЖИЗНИ! 💀 БЕЗ ТУАЛЕТА НИНА НЕ НИНА! 😭",
+            "ОЛЕГ! ДЕНЬГИ ПЛОЧУ, ТАК ЧТО ШОБ БЫСТРО И БЕЗ ВОНИ! 💸💨",
+            "А Я Ж ГОВОРИЛА, НЕ НАДО БЫЛО В УНИТАЗ ПЕЛЬМЕНИ СМЫВАТЬ! 🥟🤦‍♀️",
+            "ГОВНО НЕ УХОДИТ! 💩 ЭТО ЗНАК СВЫШЕ? 👼 ИЛИ ПРОСТО ОЛЕГ НУЖЕН? 🤔",
+            "МОЙ ТУАЛЕТНЫЙ ТРОН СЛОМАЛСЯ! 👑🚽 ПОЧУВСТВУЙТЕ МОЮ БОЛЬ! 💔",
+            "ТЕПЕРЬ ПРИДЁТСЯ В ВЕДРО СРАТЬ?! 🧺💩 НЕТ, Я НА ЭТО НЕ ПОДПИСЫВАЛАСЬ! 😤",
+            "ЭТО ДИВЕРСИЯ ХЕЙТАРОВ! 😡 ОНИ ХОТЯТ ЧТОБ Я ОБОСРАЛАСЬ НА СТРИМЕ! 🎥",
+            "ВОТ ПОЧЕМУ НАДО ДЕРЖАТЬ ОЛЕГА НА КОРОТКОМ ПОВОДКЕ! 🐕‍🦺 ВЕЧНО ЕГО НЕТ, КОГДА НУЖЕН! 😡",
+            "ЧУВСТВУЮ, СЕГОДНЯ БУДЕТ ВЕСЁЛЫЙ ДЕНЬ... 🤦‍♀️",
+            "ЗАПАХЛО БЕДОЙ... И ГОВНОМ... 🤢💨",
+            "А Я ТОЛЬКО ХОТЕЛА ПОСРАТЬ, А ТУТ ТАКОЕ! 😩 ПОДЛОСТЬ! 🤬",
+            "НУ ВСЁ, ПРОВОДИТЕ МЕНЯ В ПОСЛЕДНИЙ ПУТЬ! 🚶‍♀️💩"
+        ],
+        toilet_repair_finished: [ /* Фразы для починки туалета Олегом */
+            "ОЛЕГ, БЛЯТЬ, ТЫ ЗАКОНЧИЛ?! 🗣️ ЗАХОЖУ! 🏃‍♀️💨",
+            "НАКОНЕЦ-ТО! 🥳 ТУАЛЕТ СНОВА РАБОТАЕТ, СПАСИБО, ОЛЕГ (ПОЧТИ)! 👍🚽",
+            "ОЛЕГ, МОЙ СПАСИТЕЛЬ! 😇 ЗАВТРА ТЕБЕ МЕДАЛЬ ВЫДАМ (ИЛИ ПИНКА ДАМ)! 🏅",
+            "ВОНИ МЕНЬШЕ, ЧЕМ ОБЫЧНО. ОЛЕГ, ТЫ ЧЁ, СТАРАЕШЬСЯ? 🤨",
+            "ГОВНО-КОРОЛЬ СНОВА В ДЕЛЕ! 👑💩 СПАСИБО, ОЛЕГ! 😉",
+            "ЭТОТ ОЛЕГ ХОТЬ И ЕБАНЬКО, НО ЗОЛОТЫЕ РУКИ! 🛠️",
+            "ПЕРЕДАЙТЕ ОЛЕГУ, ЧТО ОН СУПЕРГЕРОЙ! 🦸‍♂️ НО ТОЛЬКО ОДИН ДЕНЬ! 😤",
+            "НУ ВСЁ, ТЕПЕРЬ МОЖНА СПАТЬ СПОКОЙНА... И СРАТЬ! 😌🚽",
+            "ОЛЕГ ПОЧИНИЛ! А Я УЖ ДУМАЛА, ВСЁ, ПИЗДЕЦ ЖИЗНИ! 😅",
+            "ТЕПЕРЬ У МЕНЯ ЕСТЬ ГЕРОЙ, КОТОРЫЙ ЧИНИТ ГОВНО! 🏆",
+            "ПУСТЬ ЗНАЮТ, ЧТО У НИНЫ ЕСТЬ СВОЙ ЛИЧНЫЙ САНТЕХНИК! 👨‍🔧",
+            "ОЛЕГ, ТЕБЕ БЫ ПАМЯТНИК ПРИ ЖИЗНИ ПОСТРОИТЬ... ИЗ ГОВНА! 🗿💩",
+            "НУ ВСЁ, МОЖНА СНОВА НАСИЛОВАТЬ УНИТАЗ! 😈🚽",
+            "ОЛЕГ - МОЙ ЛУЧШИЙ ПОДРИЩЕК! 💖",
+            "ТЕПЕРЬ МОЖНА И ПЕРДАНУТЬ СО СПОКОЙНОЙ ДУШОЙ! 💨"
+        ]
     };
     
     const getRandomPhrase = (key) => PHRASES[key][Math.floor(Math.random() * PHRASES[key].length)];
@@ -625,6 +693,10 @@
     const suitorModal = document.getElementById('suitor-modal');
     const suitorButton = document.getElementById('suitor-button');
     const sergeyButton = document.getElementById('sergey-button');
+    const poopButton = document.getElementById('poop-button'); // Добавлено
+    const catchSubscribersButton = document.getElementById('catch-subscribers-button'); // Добавлено
+    const monetkaButton = document.getElementById('monetka-button'); // Добавлено
+    const gossipButton = document.getElementById('gossip-button'); // Добавлено
     const mainMenu = document.getElementById('main-menu');
     const gameScreen = document.getElementById('game-screen');
     const continueButton = document.getElementById('continue-button');
@@ -642,18 +714,33 @@
     const streamSounds = ["https://zaebizwear.com/pidor/video_2025-06-19_18-44-48.mp3", "https://zaebizwear.com/pidor/video_2025-06-19_18-45-46.mp3", "https://zaebizwear.com/pidor/video_2025-06-19_18-54-53%20(online-audio-converter.com).mp3"];
     const screamerSound = "https://www.myinstants.com/media/sounds/hl2-stalker-scream.mp3";
     const SUITOR_PHOTOS = { sergey: 'https://zaebizwear.com/pidor/gay.jpg', ivan: 'https://zaebizwear.com/pidor/smile.jpg', grigoriy: 'https://www.meme-arsenal.com/memes/299e198aa1e19319430c7654f15996c0.jpg', shrek: 'https://zaebizwear.com/pidor/shrek.jpg' };
-    const actions = { cook: { time: 1, energy: -10, mood: 0, hunger: 50 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 }, watch_tv: { time: 2, energy: -5, mood: 10, hunger: -5 }, monetka: { time: 2, energy: -20, mood: 0, hunger: -5 }, gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -15, mood: 25, hunger: -5 }, stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }, call_sergey: { time: 3, energy: -10, mood: -20 }, poop: { time: 1, energy: -5, mood: 5 }, fart: { energy: -1, mood: 3 }, suitors: { time: 2, energy: -10 } };
-    
+    const actions = { cook: { time: 1, energy: -10, mood: 0, hunger: 50 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 }, watch_tv: { time: 2, energy: -5, mood: 10, hunger: -5 }, monetka: { time: 2, energy: -20, mood: 0, hunger: -5 }, gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -15, mood: 25, hunger: -5 }, stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }, call_sergey: { time: 3, energy: -10, mood: -20 }, poop: { time: 1, energy: -5, mood: 5 }, fart: { energy: -1, mood: 3 }, suitors: { time: 2, energy: -10 }, catch_subscribers: { time: 2, energy: -15, mood: 10, products: 1 } }; // Добавлено новое действие
+
     function getNewGameState() {
         return {
             day: 1, time: 8,
             stats: { energy: 100, mood: 70, hunger: 80, money: 5000, poop: 0 },
             products: 0, fartsToday: 0, suitorCooldown: 0, child: null, suitor: null, lastStreamDay: -2, 
             isAsleep: false, gameOver: false,
-            techState: { tv: 'ok', tiktok: 'ok', stream: 'ok', internet: 'ok', fridge: 'ok', washing_machine: 'ok', toilet: 'ok' }, // Добавлены новые тех. состояния
+            techState: { tv: 'ok', tiktok: 'ok', stream: 'ok', internet: 'ok', fridge: 'ok', washing_machine: 'ok', toilet: 'ok', toilet_clogged: false, toilet_available_day: -1 }, // Changed toilet_repair_day to toilet_available_day
             nextBreakdownDay: Math.floor(Math.random() * 2) + 2,
+            toiletClogDays: getRandomToiletClogDays(), // Дни засора туалета
+            lastCatchSubscribersWeek: -1, // Неделя последнего отлова подрищиков
         };
     }
+
+    // Функция для генерации двух случайных дней засора туалета до 60-го дня
+    function getRandomToiletClogDays() {
+        const days = [];
+        while (days.length < 2) {
+            const day = Math.floor(Math.random() * 59) + 1; // День от 1 до 59
+            if (!days.includes(day)) {
+                days.push(day);
+            }
+        }
+        return days.sort((a, b) => a - b);
+    }
+
 
     function manualSave() {
         if (gameState.gameOver) { addMessage("Мёртвые не сохраняются... 💀"); return; }
@@ -678,6 +765,11 @@
                 if (gameState.techState.fridge === undefined) gameState.techState.fridge = 'ok';
                 if (gameState.techState.washing_machine === undefined) gameState.techState.washing_machine = 'ok';
                 if (gameState.techState.toilet === undefined) gameState.techState.toilet = 'ok';
+                if (gameState.techState.toilet_clogged === undefined) gameState.techState.toilet_clogged = false;
+                if (gameState.techState.toilet_available_day === undefined) gameState.techState.toilet_available_day = -1;
+                if (gameState.toiletClogDays === undefined) gameState.toiletClogDays = getRandomToiletClogDays();
+                if (gameState.lastCatchSubscribersWeek === undefined) gameState.lastCatchSubscribersWeek = -1;
+
 
                 gameState.isAsleep = false; 
                 gameState.gameOver = false; 
@@ -755,7 +847,7 @@
         gameWinModal.classList.add('hidden');
         suitorModal.classList.add('hidden');
         initGame(false, gameState.gameMode || 'normal');
-        addMessage("ИГРА НАЧАТА ЗАНОВА ПО ТРЕБОВАНИЮ ТРУДЯЩИХСЯ! ✊✊");
+        addMessage("ИГРА НАЧАТА ЗАНОВА ПО ТРЕБОВАНИЯМ ТРУДЯЩИХСЯ! ✊✊");
     }
 
     function updateUI() {
@@ -775,22 +867,30 @@
         moneyVal.textContent = gameState.stats.money;
         poopVal.textContent = Math.round(gameState.stats.poop);
         productsCount.textContent = `${gameState.products} шт.`;
-        sergeyButton.disabled = !Object.values(gameState.techState).some(s => s === 'broken');
+        
+        // Обновление состояния кнопки "Позвать Серёгу"
+        // Кнопка активна, если есть хоть что-то сломанное, включая туалет
+        sergeyButton.disabled = !Object.values(gameState.techState).some(s => s === 'broken' || s === true);
+
+        // Обновление состояния кнопки "ПОСРАТЬ"
+        poopButton.disabled = gameState.techState.toilet_clogged;
+
+        // Обновление состояния кнопки "Отлов подрищиков на котлетки"
+        const currentWeek = Math.floor(gameState.day / 7);
+        // Доступно, если денег < 1000 И не использовано на этой неделе
+        catchSubscribersButton.disabled = !(gameState.stats.money < 1000 && currentWeek !== gameState.lastCatchSubscribersWeek);
+        
         suitorButton.disabled = gameState.day < gameState.suitorCooldown || gameState.suitor !== null;
 
-        if (gameState.child) {
-            childInfo.innerHTML = `<p class="responsive-text-xl font-bold text-red-700">Спиногрыз: ${gameState.child.name} (помрёт через ${gameState.child.daysLeft} д.)</p>`;
-        } else if (gameState.suitor) {
-            childInfo.innerHTML = `<p class="responsive-text-xl font-bold text-blue-700">Жених: ${gameState.suitor.name} (уйдёт через ${gameState.suitor.daysLeft} д.)</p>`;
-        } else {
-            childInfo.innerHTML = '';
-        }
+        // Обновление отображения фото жениха
         if (gameState.suitor) {
             suitorPhotoContainer.innerHTML = `<img src="${gameState.suitor.photo}" alt="${gameState.suitor.name}">`;
             suitorPhotoContainer.classList.remove('hidden');
+            // ninaSprite.classList.add('with-suitor'); /* Add class for positioning if needed */ // Not needed with direct flex order
         } else {
             suitorPhotoContainer.innerHTML = '';
             suitorPhotoContainer.classList.add('hidden');
+            // ninaSprite.classList.remove('with-suitor'); /* Remove class */ // Not needed with direct flex order
         }
     }
     
@@ -811,6 +911,14 @@
             if (gameState.time >= 24) {
                 gameState.day++;
                 gameState.fartsToday = 0;
+                
+                // Проверка починки туалета Олегом
+                if (gameState.techState.toilet_clogged && gameState.day === gameState.techState.toilet_available_day) { 
+                    gameState.techState.toilet_clogged = false;
+                    gameState.techState.toilet_available_day = -1; // Сброс дня ремонта
+                    addMessage(getRandomPhrase('toilet_fixed'));
+                }
+
                 if (gameState.day > 60) { triggerWin(); return; }
                 if (gameState.suitor) {
                     gameState.suitor.daysLeft--;
@@ -850,8 +958,17 @@
                     gameState.stats.money += GAME_PARAMS.pensionAmount;
                     addMessage(`ПЕНСИЯ ПРИШЛААА! +${GAME_PARAMS.pensionAmount} лавэ. ГУЛЯЕМ РВАНИНА!!! 🤑🤑🤑`);
                 }
+                
+                // Проверка на засор туалета
+                if (gameState.toiletClogDays.includes(gameState.day) && !gameState.techState.toilet_clogged && gameState.day <= 60) {
+                    gameState.techState.toilet_clogged = true;
+                    gameState.techState.toilet_available_day = gameState.day + 1; // Будет доступен завтра
+                    addMessage(getRandomPhrase('toilet_clogged'));
+                }
+
+                // Проверка других поломок
                 if (gameState.day >= gameState.nextBreakdownDay) {
-                    const tech = ['tv', 'tiktok', 'stream', 'internet', 'fridge', 'washing_machine', 'toilet']; // Добавлены новые виды поломок
+                    const tech = ['tv', 'tiktok', 'stream', 'internet', 'fridge', 'washing_machine']; 
                     const brokenTech = tech[Math.floor(Math.random() * tech.length)];
                     gameState.techState[brokenTech] = 'broken';
                     addMessage(PHRASES.tech_broken[brokenTech] + ' НАДА ЗВАТЬ СЕРЁГУ!!! 📞🤬');
@@ -870,6 +987,12 @@
             return;
         }
         const action = actions[actionKey];
+
+        // Проверка туалета перед действием "poop"
+        if (actionKey === 'poop' && gameState.techState.toilet_clogged) {
+            addMessage(getRandomPhrase('toilet_clogged'));
+            return;
+        }
 
         if (action.energy < 0 && gameState.stats.energy < Math.abs(action.energy)) {
             addMessage(getRandomPhrase('no_energy'));
@@ -896,8 +1019,20 @@
         if (actionKey === 'gossip' && gameState.techState.internet === 'broken') {
             addMessage(PHRASES.tech_broken.internet + ' НЕ МОГУ ЗАЙТИ В ОДНОКЛАССНИКИ! 😭'); return;
         }
-        if (actionKey === 'poop' && gameState.techState.toilet === 'broken') {
-            addMessage(PHRASES.tech_broken.toilet + ' СЕРЁГА, БЛЯТЬ, ГДЕ ТЫ?! 🚽💥'); return;
+        // catch_subscribers specific logic
+        if (actionKey === 'catch_subscribers') {
+            const currentWeek = Math.floor(gameState.day / 7);
+            if (gameState.stats.money >= 1000) { // Условие: денег меньше тысячи
+                addMessage("ДЕНЬГИ ЕСТЬ! ИДИ В МАГАЗИН, НЕ ПОЗОРЬСЯ! 😠💸");
+                return;
+            }
+            if (currentWeek === gameState.lastCatchSubscribersWeek) {
+                addMessage("ТОЛЬКО РАЗ В НЕДЕЛЮ, ЁПТА! ПОДРИЩЕКИ НЕ БЕСКОНЕЧНЫЕ! 🙄🎣");
+                return;
+            }
+            gameState.lastCatchSubscribersWeek = currentWeek;
+            gameState.products += 1;
+            addMessage(getRandomPhrase('catch_subscribers'));
         }
 
 
@@ -937,16 +1072,36 @@
                 break;
             case 'call_sergey':
                 let repairCost = 0;
+                let fixedSomething = false;
+
+                // Fix other broken tech immediately
                 for (const techKey in gameState.techState) {
-                    if (gameState.techState[techKey] === 'broken') {
-                        repairCost += Math.floor(Math.random() * 500) + 200; // Случайная стоимость ремонта
+                    if (techKey !== 'toilet_clogged' && techKey !== 'toilet_available_day' && gameState.techState[techKey] === 'broken') {
+                        repairCost += Math.floor(Math.random() * 500) + 200;
                         gameState.techState[techKey] = 'ok';
+                        fixedSomething = true;
                     }
                 }
-                if (repairCost === 0) { addMessage("ВСЁ И ТАК РАБОТАЕТ, ЧЕГО ЗВОНИШЬ?! 🤨"); return; }
+
+                // Handle clogged toilet: initiates repair, but becomes available next day
+                if (gameState.techState.toilet_clogged === true) {
+                    repairCost += Math.floor(Math.random() * 300) + 100; // Cost for toilet repair
+                    // toilet_clogged remains true for the rest of current day
+                    gameState.techState.toilet_available_day = gameState.day + 1; // Will be available tomorrow
+                    addMessage(getRandomPhrase('toilet_repair')); // Oleg starts fixing
+                    fixedSomething = true; // Mark that something was fixed
+                }
+
+                if (!fixedSomething) { addMessage("ВСЁ И ТАК РАБОТАЕТ, ЧЕГО ЗВОНИШЬ?! 🤨"); return; }
                 if (gameState.stats.money < repairCost) { addMessage(getRandomPhrase('no_money') + ' ДЕНЕГ НА СЕРЁГУ НЕТ! 😤'); return; }
+                
                 gameState.stats.money -= repairCost;
-                addMessage(`${getRandomPhrase(actionKey)} (-${repairCost} руб.💰). Всё работает, по крайней мере пока. 🛠️`);
+                
+                if (gameState.techState.toilet_clogged && !Object.values(gameState.techState).filter(s => s === 'broken').length) { // Only toilet was broken
+                    addMessage(`Серёга занялся туалетом (-${repairCost} руб.💰). Будет готов завтра!`);
+                } else if (fixedSomething) { // Other things fixed too
+                    addMessage(`${getRandomPhrase(actionKey)} (-${repairCost} руб.💰). Всё работает, по крайней мере пока. 🛠️`);
+                }
                 break;
             case 'poop':
                 playSound(poopSound.src, poopSound);
@@ -962,10 +1117,11 @@
                 return;
         }
 
-        if (actionKey !== 'monetka' && actionKey !== 'call_sergey') { addMessage(getRandomPhrase(actionKey)); }
+        if (!['monetka', 'call_sergey', 'catch_subscribers', 'poop'].includes(actionKey)) { addMessage(getRandomPhrase(actionKey)); } // Избегаем дублирования сообщений
         if (action.money) gameState.stats.money += action.money;
         if (action.energy) gameState.stats.energy += action.energy;
         if (action.mood) gameState.stats.mood += action.mood;
+        if (action.hasOwnProperty('products')) { gameState.products += action.products; } // Добавлена обработка продуктов
         if (action.hasOwnProperty('hunger')) { gameState.stats.hunger += action.hunger; }
         if (action.time) { advanceTime(action.time); } else { updateUI(); }
     }
@@ -997,13 +1153,14 @@
     }
     
     function triggerRandomEvent() {
+        // Пока оставим только событие с Серёгой и ЖКХ
         const roll = Math.random();
-        if (roll < 0.33) {
+        if (roll < 0.5) { 
             document.getElementById('game-container').classList.add('shake-animation');
             setTimeout(() => document.getElementById('game-container').classList.remove('shake-animation'), 500);
             gameState.stats.mood -= 25;
             addMessage(getRandomPhrase('sergey_event'));
-        } else if (roll < 0.66) {
+        } else if (roll < 0.8) { 
             gameState.stats.money -= Math.floor(Math.random() * 200) + 100;
             addMessage("Пришла квитанция за ЖКХ. Грабят средь бела дня, черти! Лавэ улетело.");
         }
@@ -1028,7 +1185,8 @@
             else if (gameState.stats.poop >= 100) reasonKey = "poop";
             else if (gameState.stats.money <= 0 && gameState.products <= 0) reasonKey = "money"; 
             else if (gameState.child && gameState.child.daysLeft <= 0 && gameState.products === 0) reasonKey = "child"; 
-            else if (gameState.suitor && gameState.suitor.daysLeft <= 0 && gameState.suitor.type === 'leech' && gameState.stats.money <= 0) reasonKey = "suitor"; 
+            else if (gameState.suitor && gameState.suitor.daysLeft <= 0 && gameState.suitor.type === 'leech' && gameState.stats.money <= 0) reasonKey = "suitor";
+            else if (gameState.techState.toilet_clogged && gameState.stats.poop >= 100) reasonKey = "toilet"; // Game Over от засора, если не починили
         }
         if (reasonKey) {
             gameState.gameOver = true;
@@ -1044,7 +1202,7 @@
 
     function addMessage(text) {
         const p = document.createElement('p');
-        p.className = 'text-lg text-gray-800 mb-1';
+        p.className = 'text-gray-800 mb-1'; 
         p.textContent = `> ${text}`;
         messageBox.prepend(p);
         if(messageBox.children.length > 50) {
@@ -1093,6 +1251,37 @@
     window.onload = () => {
         showMainMenu();
     };
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker зарегистрирован:', registration);
+                })
+                .catch(error => {
+                    console.error('Ошибка регистрации Service Worker:', error);
+                });
+        });
+    }
+
+    // Optional: Request fullscreen on first interaction for PWA-like experience
+    document.addEventListener('DOMContentLoaded', () => {
+        const appContainer = document.getElementById('app-container');
+        if (appContainer && document.fullscreenEnabled) {
+            const startGameButtons = document.querySelectorAll('#main-menu button');
+            startGameButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (!document.fullscreenElement) {
+                        appContainer.requestFullscreen().catch(err => {
+                            console.error(`Ошибка при попытке перейти в полноэкранный режим: ${err.message}`);
+                        });
+                    }
+                }, { once: true }); 
+            });
+        }
+    });
+
 </script>
 
 </body>
