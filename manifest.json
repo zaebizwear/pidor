@@ -1,0 +1,21 @@
+{
+  "name": "Симулятор Бабки Нинки",
+  "short_name": "Бабка Нина",
+  "description": "Увлекательный симулятор жизни Бабки Нинки!",
+  "start_url": "babka.html",
+  "display": "fullscreen",
+  "background_color": "#f3e9dc",
+  "theme_color": "#d2691e",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
