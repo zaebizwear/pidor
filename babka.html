@@ -28,12 +28,7 @@
             font-family: 'Lobster', cursive;
         }
 
-        /* --- DESKTOP/LANDSCAPE REFACTOR --- */
-        /* Main application container is now a flex container to center the game */
         #app-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
             width: 100%;
             height: 100%;
             background-color: #f3e9dc;
@@ -41,29 +36,29 @@
             position: relative;
         }
         
-        /* Removed orientation overlay styles */
+        /* --- FIX: Centering the game window --- */
+        /* This container will now handle the centering of the game-container */
+        #game-screen {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;   /* Center vertically */
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
 
-        /* Game container optimized for desktop */
         #game-container {
             border: 10px solid transparent;
             border-image: url('data:image/svg+xml;charset=UTF-8,%3csvg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"%3e%3cpath fill-rule="evenodd" clip-rule="evenodd" d="M16 0L20.6959 5.8622L27.5251 4.21885L29.6574 11.2189L32 16L29.6574 20.7811L27.5251 27.7812L20.6959 26.1378L16 32L11.3041 26.1378L4.47487 27.7812L2.34259 20.7811L0 16L2.34259 11.2189L4.47487 4.21885L11.3041 5.8622L16 0Z" fill="%238B4513"/%3e%3cpath fill-rule="evenodd" clip-rule="evenodd" d="M16 4L19.3496 8.35634L24.3375 7.1498L25.9618 12.311L28 16L25.9618 19.689L24.3375 24.8502L19.3496 23.6437L16 28L12.6504 23.6437L7.66248 24.8502L6.03819 19.689L4 16L6.03819 12.311L7.66248 7.1498L12.6504 8.35634L16 4Z" fill="%23D2691E"/%3e%3c/svg%3e') 10 round;
             background-color: #fff8f0;
             width: 100%; 
             height: 100%;
-            max-width: 900px; /* Increased max-width for desktop */
-            max-height: 800px; /* Adjusted max-height for desktop */
+            max-width: 900px; 
+            max-height: 800px;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 1rem; /* Increased padding */
-        }
-
-        #game-screen {
-            display: flex;
-            flex-direction: column; 
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+            padding: 1rem;
         }
 
         .game-header h1 {
@@ -93,7 +88,7 @@
         }
 
         .char-images-container {
-            width: 120px; /* Larger fixed width for character images */
+            width: 120px;
         }
         
         #nina-sprite {
@@ -116,7 +111,7 @@
 
         #message-box {
             flex-shrink: 0;
-            height: 150px; /* Fixed height for message box */
+            height: 150px;
             background-color: #faf3e0;
             padding: 0.8rem;
             border-radius: 0.5rem;
@@ -137,10 +132,8 @@
             margin-bottom: 0.8rem;
         }
 
-        /* Action buttons grid now responsive for desktop */
         .actions-buttons-grid {
             display: grid;
-            /* This will create as many columns as fit, with a minimum width of 140px */
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.5rem;
             flex-grow: 1;
@@ -154,7 +147,6 @@
             min-height: 60px;
         }
         
-        /* Shake animation and other styles remain the same */
         .shake-animation { animation: shake 0.5s; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -219,7 +211,7 @@
                                 <h3 class="font-bold text-gray-700">Продукты 🛒</h3>
                                 <div id="products-count" class="text-center font-semibold bg-white p-0.5 rounded border border-gray-300">0 шт.</div>
                             </div>
-                            <div id="child-info" class="mt-1"></div>
+                            <div id="child-info" class="hidden mt-1 text-center col-span-full"></div>
                         </div>
                     </div>
 
@@ -291,7 +283,6 @@
     <audio id="stream-sfx-player"></audio>
 
 <script>
-    // PHRASES object remains the same
     const PHRASES = {
         fart: [
             "ух бля! �💨 как галубь мира вылител 🕊️🕊️", "палегче стала... 😌😌", "музычка! 🎶🎶", "ароматна... 🌸🌸🤣🤣", "надеюсь никто ни услышал... 🤫🤫 а если и услышал то похуй 👍", "эта я ни перднула эта душа плачит 😭😂", "ой... 😳", "выпустила демона 😈😈", "мАя падливка 🔥🔥🔥", "это вам за всё харошее! 👍💨", "прочистила дымоход 💨",
@@ -467,7 +458,6 @@
     let GAME_PARAMS = {};
     let inactivityTimer;
 
-    // --- DOM ELEMENT REFERENCES ---
     const timeDisplay = document.getElementById('time-display');
     const energyVal = document.getElementById('energy-val');
     const moodVal = document.getElementById('mood-val');
@@ -502,7 +492,6 @@
     const fartSoundsPlayer = document.getElementById('fart-sounds');
     const streamSfxPlayer = document.getElementById('stream-sfx-player');
     
-    // --- GAME CONSTANTS ---
     const originalSprite = "https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg";
     const streamSprite = "https://zaebizwear.com/pidor/stream.jpg"; 
     const fartSounds = ['https://www.myinstants.com/media/sounds/fart-meme-sound.mp3', 'https://www.myinstants.com/media/sounds/rec_10s_neLGvAd.mp3', 'https://www.myinstants.com/media/sounds/fooz.mp3', 'https://www.myinstants.com/media/sounds/09037.mp3'];
@@ -546,7 +535,6 @@
         if (savedGame) {
             try {
                 gameState = JSON.parse(savedGame);
-                // --- Safe-guarding for older save files ---
                 if (gameState.stats.poop === undefined) gameState.stats.poop = 0;
                 if (gameState.fartsToday === undefined) gameState.fartsToday = 0;
                 if (gameState.child === undefined) gameState.child = null;
@@ -561,7 +549,6 @@
                 if (gameState.techState.toilet_available_day === undefined) gameState.techState.toilet_available_day = -1;
                 if (gameState.toiletClogDays === undefined) gameState.toiletClogDays = getRandomToiletClogDays();
                 if (gameState.lastCatchSubscribersWeek === undefined) gameState.lastCatchSubscribersWeek = -1;
-
                 gameState.isAsleep = false; 
                 gameState.gameOver = false; 
             } catch (e) {
@@ -595,7 +582,6 @@
         gameWinModal.classList.add('hidden');
         suitorModal.classList.add('hidden');
 
-        // FIX: Using classList.toggle for the continue button visibility
         const hasSave = localStorage.getItem('babkaNinaSave') !== null;
         continueButton.classList.toggle('hidden', !hasSave);
 
@@ -635,6 +621,7 @@
     }
 
     function updateUI() {
+        // --- Sanitize stats ---
         for (const key in gameState.stats) {
             if (isNaN(gameState.stats[key])) {
                 console.error(`Stat ${key} стал NaN! Сбрасываю.`);
@@ -644,6 +631,8 @@
         Object.keys(gameState.stats).forEach(key => {
             if (key !== 'money') gameState.stats[key] = Math.max(0, Math.min(100, gameState.stats[key]));
         });
+        
+        // --- Update display elements ---
         timeDisplay.textContent = `День ${gameState.day}, ${String(gameState.time).padStart(2, '0')}:00`;
         energyVal.textContent = Math.round(gameState.stats.energy);
         moodVal.textContent = Math.round(gameState.stats.mood);
@@ -652,14 +641,23 @@
         poopVal.textContent = Math.round(gameState.stats.poop);
         productsCount.textContent = `${gameState.products} шт.`;
         
+        // --- FIX: Display child info ---
+        if (gameState.child) {
+            childInfo.innerHTML = `<span>👶</span> <strong>Спиногрыз:</strong> ${gameState.child.name} (дней: ${gameState.child.daysLeft})`;
+            childInfo.classList.remove('hidden');
+        } else {
+            childInfo.innerHTML = '';
+            childInfo.classList.add('hidden');
+        }
+
+        // --- Update button states ---
         sergeyButton.disabled = !Object.values(gameState.techState).some(s => s === 'broken' || s === true);
         poopButton.disabled = gameState.techState.toilet_clogged;
-        
         const currentWeek = Math.floor(gameState.day / 7);
         catchSubscribersButton.disabled = !(gameState.stats.money < 1000 && currentWeek !== gameState.lastCatchSubscribersWeek);
-        
         suitorButton.disabled = gameState.day < gameState.suitorCooldown || gameState.suitor !== null;
 
+        // --- Update suitor photo ---
         if (gameState.suitor) {
             suitorPhotoContainer.innerHTML = `<img src="${gameState.suitor.photo}" alt="${gameState.suitor.name}">`;
             suitorPhotoContainer.classList.remove('hidden');
@@ -876,7 +874,7 @@
                 playSound(fartSounds[Math.floor(Math.random() * fartSounds.length)], fartSoundsPlayer);
                 break;
             case 'suitors':
-                suitorModal.classList.remove('hidden'); // This should now work reliably
+                suitorModal.classList.remove('hidden');
                 return;
         }
 
@@ -890,19 +888,21 @@
     }
 
     function selectSuitor(suitorName) {
-        suitorModal.classList.add('hidden'); // Hide after selection
+        suitorModal.classList.add('hidden');
         addMessage(`выбрала мужика... ${suitorName}... посмотрим чо будит... 👀`);
         gameState.stats.mood = 100;
         gameState.suitorCooldown = gameState.day + 7;
+        // FIX: The logic for child creation is here and correct.
         const suitorData = {
             sergey: { name: 'Серёга Орешкин', type: 'child', photo: SUITOR_PHOTOS.sergey },
-            ivan: { name: 'Иван Смайл', type: 'leech', photo: SUITOR_PHOTOS.ivan },
+            ivan: { name: 'Иван Смайл', type: 'leech', photo: SUITOR_PHOTOS.ivan }, // No child from Ivan
             grigoriy: { name: 'Бомж Григорий', type: 'child', photo: SUITOR_PHOTOS.grigoriy },
             shrek: { name: 'Шрек', type: 'child', photo: SUITOR_PHOTOS.shrek }
         };
         gameState.suitor = { ...suitorData[suitorName], daysLeft: 7 };
+        
         if (gameState.suitor.type === 'child') {
-            const nameParts1 = ['Абасралиус', 'Пердофил', 'Дристофан', 'Серговно', 'Пуканыч', 'Жопань', 'Воняка', 'Тухляк'];
+            const nameParts1 = ['Абсдристий', 'Пердофил', 'Дристофан', 'Серговно', 'Пуканыч', 'Жопань', 'Воняка', 'Тухляк'];
             const nameParts2 = ['Обдристий', 'Пердунович', 'Засранцев', 'Обосралов', 'Вонючкин', 'Мочевой', 'Какашкин', 'Грязищук'];
             const childName = nameParts1[Math.floor(Math.random()*nameParts1.length)] + ' ' + nameParts2[Math.floor(Math.random()*nameParts2.length)];
             gameState.child = { name: childName, daysLeft: 7 };
@@ -910,6 +910,7 @@
         } else {
             addMessage('этот щенок будет жрать тваи деньги 💸💸');
         }
+        
         const action = actions.suitors;
         gameState.stats.energy += action.energy;
         advanceTime(action.time);
@@ -990,7 +991,7 @@
     }
     
     function afkGameOver() {
-        if (gameState.gameOver || !mainMenu.classList.contains('hidden')) return;
+        if (gameState.gameOver || !gameScreen.classList.contains('hidden')) return;
         gameState.gameOver = true;
         clearTimeout(inactivityTimer);
         playSound(screamerSound);
@@ -1014,7 +1015,6 @@
         showMainMenu();
     };
 
-    // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js')
@@ -1026,8 +1026,6 @@
                 });
         });
     }
-
-    // REMOVED: Fullscreen request on game start
 </script>
 
 </body>
