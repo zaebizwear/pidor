@@ -3,45 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Симулятор Бабки Нинки</title>
+    <title>Симулятор Бабки Нинки (ПК версия)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lobster&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <style>
-        /* Base font size for rem units, optimized for mobile portrait */
+        /* Base font size for desktop */
         html {
-            font-size: 13px; /* Smaller base for iPhone 13 mini like screens */
-        }
-        @media (min-width: 375px) { /* iPhone SE, etc */
-            html {
-                font-size: 14px;
-            }
-        }
-        @media (min-width: 480px) { /* Larger phones like iPhone 13 Pro Max, small tablets */
-            html {
-                font-size: 15px;
-            }
-        }
-        @media (min-width: 768px) { /* Tablets in portrait, standard desktops */
-            html {
-                font-size: 16px;
-            }
-        }
-        @media (min-width: 1024px) { /* Larger desktops */
-            html {
-                font-size: 17px;
-        }
-        }
-        /* Media query for landscape orientation: force orientation warning *ONLY* for small screens */
-        @media (orientation: landscape) and (max-width: 767px) {
-            #orientation-overlay {
-                display: flex !important;
-            }
-            #app-container {
-                display: none !important;
-            }
+            font-size: 16px;
         }
 
         body, html {
@@ -57,20 +28,8 @@
             font-family: 'Lobster', cursive;
         }
 
-        #orientation-overlay {
-            display: none; /* Hidden by default, shown by media query for small landscape screens */
-            position: fixed;
-            inset: 0;
-            background-color: #111;
-            color: white;
-            z-index: 100;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-        }
-
+        /* --- DESKTOP/LANDSCAPE REFACTOR --- */
+        /* Main application container is now a flex container to center the game */
         #app-container {
             display: flex;
             justify-content: center;
@@ -81,245 +40,121 @@
             background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23d4c4b0" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
             position: relative;
         }
+        
+        /* Removed orientation overlay styles */
 
+        /* Game container optimized for desktop */
         #game-container {
             border: 10px solid transparent;
             border-image: url('data:image/svg+xml;charset=UTF-8,%3csvg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"%3e%3cpath fill-rule="evenodd" clip-rule="evenodd" d="M16 0L20.6959 5.8622L27.5251 4.21885L29.6574 11.2189L32 16L29.6574 20.7811L27.5251 27.7812L20.6959 26.1378L16 32L11.3041 26.1378L4.47487 27.7812L2.34259 20.7811L0 16L2.34259 11.2189L4.47487 4.21885L11.3041 5.8622L16 0Z" fill="%238B4513"/%3e%3cpath fill-rule="evenodd" clip-rule="evenodd" d="M16 4L19.3496 8.35634L24.3375 7.1498L25.9618 12.311L28 16L25.9618 19.689L24.3375 24.8502L19.3496 23.6437L16 28L12.6504 23.6437L7.66248 24.8502L6.03819 19.689L4 16L6.03819 12.311L7.66248 7.1498L12.6504 8.35634L16 4Z" fill="%23D2691E"/%3e%3c/svg%3e') 10 round;
             background-color: #fff8f0;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 96vw; /* Maximize width usage */
-            height: 96vh; /* Maximize height usage */
-            max-width: 500px; /* Max width for comfortable reading on desktop, creates side borders */
-            max-height: 850px; /* Max height for desktop window */
-            min-width: 300px; /* Minimum width for small phones */
-            min-height: 500px; /* Minimum height for small phones */
+            width: 100%; 
+            height: 100%;
+            max-width: 900px; /* Increased max-width for desktop */
+            max-height: 800px; /* Adjusted max-height for desktop */
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            padding: 0.5rem;
+            padding: 1rem; /* Increased padding */
         }
 
         #game-screen {
             display: flex;
-            flex-direction: column; /* Stack elements vertically */
+            flex-direction: column; 
             width: 100%;
             height: 100%;
-            overflow: hidden; /* Important to prevent extra scrollbars */
+            overflow: hidden;
         }
 
-        /* Header area */
-        .game-header {
-            flex-shrink: 0;
-            padding: 0.5rem;
-            border-bottom: 2px dashed #8B4513;
-            margin-bottom: 0.5rem;
-        }
         .game-header h1 {
-            font-size: 1.8rem; /* Smaller for mobile portrait */
-            line-height: 1.1;
+            font-size: 2.2rem; 
         }
         .game-header p {
-            font-size: 0.8rem; /* Smaller for mobile portrait */
-            margin-top: 0.2rem;
+            font-size: 1rem; 
         }
 
-
-        /* Main content area: Stats, Character Image, Message Box */
         .main-content-area {
-            flex-grow: 1; /* Allow this area to take remaining space */
+            flex-grow: 1;
             display: flex;
-            flex-direction: column; /* Stack stats/char and message vertically */
-            gap: 0.5rem;
-            overflow: hidden; /* Important for inner scrolling */
+            flex-direction: column;
+            gap: 1rem;
+            overflow: hidden;
         }
 
         .stats-and-character {
-            flex-shrink: 0; /* Prevents this section from shrinking too much */
+            flex-shrink: 0;
             display: flex;
-            align-items: flex-start; /* Align items to top */
-            gap: 0.5rem;
+            align-items: flex-start;
+            gap: 1rem;
             background-color: #f3e9dc;
-            padding: 0.5rem; /* Compact padding */
+            padding: 1rem;
             border-radius: 0.5rem;
             border: 1px solid #d4c4b0;
-            flex-wrap: wrap; /* Allow wrapping if content is too wide */
-            justify-content: center; /* Center content horizontally on wrap */
         }
 
         .char-images-container {
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 80px; /* Fixed width for image column */
+            width: 120px; /* Larger fixed width for character images */
         }
-        @media (min-width: 480px) { /* Larger phones */
-            .char-images-container {
-                width: 100px;
-            }
-        }
-
-
-        .stats-list {
-            flex-grow: 1; /* Allow stats to take remaining space */
-            display: grid; /* Use grid for stats */
-            grid-template-columns: repeat(2, 1fr); /* 2 columns for stats */
-            gap: 0.1rem 0.5rem; /* Compact gap */
-            font-size: 0.85rem; /* Adjusted for mobile */
-            align-items: center; /* Vertically align text in grid cells */
-        }
-        .stats-list div {
-            padding: 0; /* No extra padding */
-            line-height: 1.2;
-        }
-
-
-        #products-section {
-            grid-column: 1 / -1; /* Spans all columns in grid */
-            border-top: 1px solid #d4c4b0;
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            text-align: center;
-        }
-
-        #child-info {
-            grid-column: 1 / -1; /* Spans all columns */
-            font-size: 0.85rem;
-            margin-top: 0.2rem;
-            text-align: center;
-        }
-
-        /* Container for Nina and Suitor images to control their horizontal alignment */
-        .nina-suitor-sprites {
-            display: flex;
-            align-items: flex-end; /* Align to bottom for consistent baseline if sizes differ */
-            /* Removed justify-content: center to align to start of flexbox */
-            gap: 0.3rem; /* Small gap between images */
-            margin-top: 0.5rem; /* Space below "Баба Нина" title */
-            flex-shrink: 0;
-        }
+        
         #nina-sprite {
-            width: 60px; /* Fixed size for mobile portrait */
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            border: 2px solid white;
-        }
-        @media (min-width: 480px) { /* Larger phones */
-            #nina-sprite {
-                width: 70px;
-                height: 70px;
-            }
+            width: 80px; 
+            height: 80px;
         }
 
-
-        #suitor-photo-container {
-            /* This container will be populated and shown when a suitor is active */
-            display: flex; /* Changed from hidden to flex when active */
-            flex-direction: column;
-            align-items: center;
-        }
         #suitor-photo-container img {
-            width: 50px; /* Fixed size */
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #f06292;
+            width: 60px; 
+            height: 60px;
         }
-        /* When suitor is active, adjust Nina's margin to compensate for suitor being to the left */
-        /* This rule is now less critical as flexbox naturally handles spacing with `gap` */
-
+        
+        .stats-list {
+            flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.2rem 1rem;
+            font-size: 1rem;
+        }
 
         #message-box {
-            flex-shrink: 0; /* Prevent from shrinking */
-            height: 30%; /* Use percentage of parent height for flexibility */
-            min-height: 70px; /* Minimum height */
-            max-height: 150px; /* Maximum height to control space */
+            flex-shrink: 0;
+            height: 150px; /* Fixed height for message box */
             background-color: #faf3e0;
-            padding: 0.6rem; /* Compact padding */
+            padding: 0.8rem;
             border-radius: 0.5rem;
             border: 1px solid #a0a0a0;
-            overflow-y: auto; /* Allow internal scrolling */
-            box-sizing: border-box;
-            text-align: left;
-            -webkit-overflow-scrolling: touch;
-            font-size: 0.85rem; /* Adjusted for mobile */
-            line-height: 1.3;
-            margin-bottom: 0.5rem;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
 
-
-        /* Action buttons area - NO SCROLLING ON THIS CONTAINER */
         .actions-column {
-            flex-grow: 1; /* Allow to take remaining vertical space */
-            flex-shrink: 0; /* Prevent from shrinking below content */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            padding-top: 0.5rem;
-            overflow: hidden; /* Crucial: no scroll on this container */
+            overflow: hidden;
         }
         .actions-column h3 {
-            flex-shrink: 0; /* Prevent shrinking */
-            font-size: 1.1rem; /* Smaller for mobile portrait */
-            margin-bottom: 0.4rem; /* Compact margin */
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
         }
 
+        /* Action buttons grid now responsive for desktop */
         .actions-buttons-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Default to 2 columns for portrait mobile */
-            gap: 0.4rem; /* Compact gap */
-            flex-grow: 1; /* Allow grid to fill available space */
-            overflow: hidden; /* Crucial: no overflow-y:auto here */
-            padding-bottom: 0.2rem; /* Small padding at the very bottom */
+            /* This will create as many columns as fit, with a minimum width of 140px */
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            flex-grow: 1;
+            overflow: hidden;
+            padding-bottom: 0.2rem;
         }
-        @media (min-width: 480px) { /* For wider phones (e.g., larger portrait phones) */
-            .actions-buttons-grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns for wider portrait screens */
-                gap: 0.5rem;
-            }
-        }
-
 
         .action-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-            font-size: 0.9rem; /* Adjusted for mobile portrait */
-            padding: 0.6rem 0.3rem; /* Compact padding */
-            line-height: 1.2;
-            text-align: center;
-            border-radius: 0.5rem;
-            border-bottom-width: 2px;
-            transition: all 0.1s ease-in-out;
-            min-height: 50px; /* Good touch target size */
+            font-size: 1rem;
+            padding: 0.8rem 0.5rem;
+            min-height: 60px;
         }
-        @media (min-width: 480px) { /* Larger phones */
-             .action-button {
-                font-size: 1rem;
-                min-height: 55px;
-            }
-        }
-
-
-        /* Make the "Начать заново" button take full width */
-        .action-button.col-span-full {
-            grid-column: 1 / -1; /* Spans all columns */
-            font-size: 1rem; /* Slightly larger text */
-            min-height: 55px; /* Slightly taller */
-        }
-        @media (min-width: 480px) { /* Larger phones */
-            .action-button.col-span-full {
-                font-size: 1.1rem;
-                min-height: 60px;
-            }
-        }
-
-
+        
+        /* Shake animation and other styles remain the same */
         .shake-animation { animation: shake 0.5s; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
@@ -327,55 +162,16 @@
             30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
-        
         .action-button:active { transform: translateY(0.1rem); border-bottom-width: 1px; }
         .action-button:disabled { background-color: #9ca3af; border-color: #4b5563; cursor: not-allowed; }
-
         #screamer-modal { animation-iteration-count: 5; }
         #screamer-image { width: 100%; height: 100%; object-fit: cover; }
+        #main-menu h1 { font-size: 3.5rem; }
+        #main-menu button { font-size: 1.5rem; }
 
-        /* Responsive Text Classes - Now based on dynamic html font-size (em units) */
-        /* These classes are mostly for consistency, main sizes are hardcoded in rem/px for layout */
-        .responsive-text-xl { font-size: 1.1em; } /* Example: used in child-info */
-        .responsive-text-2xl { font-size: 1.3em; } /* Example: used for Products header */
-        .responsive-text-3xl { font-size: 1.6em; } /* Example: used for Baba Nina header */
-        .responsive-text-5xl { font-size: 2.5em; } /* Example: used for main title */
-
-
-        #main-menu {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        #main-menu h1 {
-            font-size: 2.8rem; /* Adjusted for mobile menu */
-            text-shadow: 2px 2px 4px #000, 0 0 10px #ff00de;
-        }
-        #main-menu button {
-            font-size: 1.1rem; /* Adjusted for mobile menu buttons */
-            padding: 0.8rem 1.5rem;
-            border-bottom-width: 4px;
-            border-radius: 0.5rem;
-        }
     </style>
 </head>
 <body class="game-ui-background">
-
-    <!-- Orientation Overlay: Only shown if device is in landscape -->
-    <div id="orientation-overlay">
-        <h2 class="text-4xl font-lobster mb-4">Поверни экран!</h2>
-        <p class="text-2xl">Для игры в Симулятор Бабки Нинки нужна вертикальная ориентация.</p>
-        <svg class="w-24 h-24 mt-8 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.667 0l3.181-3.183m-4.991-2.695v-2.695A8.25 8.25 0 008.25 6.75l-3.181 3.182" />
-        </svg>
-    </div>
 
     <div id="app-container">
         <div id="main-menu" class="fixed inset-0 bg-cover bg-center z-40" style="background-image: url(https://avatars.mds.yandex.net/i?id=890ed37c2fe388ffbc0b78d0c3137796_l-4407893-270-images-thumbs&n=13)">
@@ -385,7 +181,7 @@
                     <button onclick="startGame('normal', false)" class="text-2xl bg-red-700 hover:bg-red-800 text-white font-bold py-3 px-6 rounded-lg border-b-4 border-red-900 active:border-b-2">
                         Новая игра
                     </button>
-                    <button onclick="startGame('normal', true)" id="continue-button" class="text-2xl bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg border-b-4 border-blue-900 active:border-b-2">
+                    <button onclick="startGame('normal', true)" id="continue-button" class="hidden text-2xl bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-lg border-b-4 border-blue-900 active:border-b-2">
                         Продолжить
                     </button>
                     <button onclick="startGame('hard', false)" id="hard-mode-button" class="text-2xl bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-lg border-b-4 border-purple-900 active:border-b-2">
@@ -395,21 +191,19 @@
             </div>
         </div>
 
-        <div id="game-screen" class="hidden"> <!-- No flex-direction here, handled by game-container -->
+        <div id="game-screen" class="hidden">
             <div id="game-container">
-                <!-- Header -->
                 <div class="game-header text-center">
                     <h1 class="font-lobster text-red-700" style="text-shadow: 1px 1px 2px #000;">Симулятор Бабки Нинки</h1>
                     <p id="time-display" class="text-gray-800 font-semibold">День 1, 08:00</p>
                 </div>
 
                 <div class="main-content-area">
-                    <!-- Stats and Character -->
                     <div class="stats-and-character">
                         <div class="char-images-container">
                             <h2 class="font-bold text-gray-700 font-lobster">Баба Нина</h2>
-                            <div class="nina-suitor-sprites"> <!-- NEW: Container for Nina and Suitor -->
-                                <div id="suitor-photo-container" class="hidden"></div> <!-- Suitor first -->
+                            <div class="nina-suitor-sprites">
+                                <div id="suitor-photo-container" class="hidden"></div>
                                 <img id="nina-sprite" src="https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg" 
                                     onerror="this.onerror=null;this.src='https://placehold.co/200x200/d1c4e9/5a4a6b?text=Баба+Нина';"
                                     alt="Изображение Бабы Нины">
@@ -429,13 +223,11 @@
                         </div>
                     </div>
 
-                    <!-- Message Box -->
                     <div id="message-box">
                         <p class="text-gray-700">> падьём бля ☀️☀️☀️ дел по горло а я тут лежу как каралева 👑👑😂</p>
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="actions-column">
                     <h3 class="font-bold text-gray-700 text-center">Чё делать-то будем, ёпта?</h3>
                     <div class="actions-buttons-grid">
@@ -451,7 +243,7 @@
                         <button onclick="performAction('fart')" class="action-button bg-lime-600 hover:bg-lime-700 border-lime-800 text-white font-bold">Пердануть</button>
                         <button onclick="performAction('suitors')" id="suitor-button" class="action-button bg-rose-500 hover:bg-rose-600 border-rose-700 text-white font-bold">Искать жениха</button>
                         <button onclick="manualSave()" class="action-button bg-cyan-600 hover:bg-cyan-700 border-cyan-800 text-white font-bold">Сохранить</button>
-                        <button onclick="performAction('catch_subscribers')" id="catch-subscribers-button" class="action-button bg-brown-700 hover:bg-brown-800 border-brown-900 text-white font-bold" style="background-color: #8B4513; border-color: #5A2D0C;" disabled>Отлов подрищиков на котлетки</button>
+                        <button onclick="performAction('catch_subscribers')" id="catch-subscribers-button" class="action-button bg-brown-700 hover:bg-brown-800 border-brown-900 text-white font-bold" style="background-color: #8B4513; border-color: #5A2D0C;" disabled>Отлов подрищиков</button>
                         <button onclick="forceRestart()" class="action-button bg-red-800 hover:bg-red-900 border-red-950 text-white font-bold col-span-full">Начать заново</button>
                     </div>
                 </div>
@@ -462,7 +254,7 @@
     <div id="suitor-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40">
         <div class="bg-pink-100 p-8 rounded-lg text-center shadow-xl border-4 border-pink-400">
             <h2 class="text-4xl font-lobster text-pink-800">Выбирай мужика!</h2>
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 mt-4">
                 <button onclick="selectSuitor('sergey')" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg">Серёга Орешкин (починит кран и пол пенсии)</button>
                 <button onclick="selectSuitor('ivan')" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">Иван Смайл (подарит смайлик и скроется)</button>
                 <button onclick="selectSuitor('grigoriy')" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg">Бомж Григорий (принесёт бутылки и блох)</button>
@@ -499,6 +291,7 @@
     <audio id="stream-sfx-player"></audio>
 
 <script>
+    // PHRASES object remains the same
     const PHRASES = {
         fart: [
             "ух бля! �💨 как галубь мира вылител 🕊️🕊️", "палегче стала... 😌😌", "музычка! 🎶🎶", "ароматна... 🌸🌸🤣🤣", "надеюсь никто ни услышал... 🤫🤫 а если и услышал то похуй 👍", "эта я ни перднула эта душа плачит 😭😂", "ой... 😳", "выпустила демона 😈😈", "мАя падливка 🔥🔥🔥", "это вам за всё харошее! 👍💨", "прочистила дымоход 💨",
@@ -674,6 +467,7 @@
     let GAME_PARAMS = {};
     let inactivityTimer;
 
+    // --- DOM ELEMENT REFERENCES ---
     const timeDisplay = document.getElementById('time-display');
     const energyVal = document.getElementById('energy-val');
     const moodVal = document.getElementById('mood-val');
@@ -693,10 +487,10 @@
     const suitorModal = document.getElementById('suitor-modal');
     const suitorButton = document.getElementById('suitor-button');
     const sergeyButton = document.getElementById('sergey-button');
-    const poopButton = document.getElementById('poop-button'); // Добавлено
-    const catchSubscribersButton = document.getElementById('catch-subscribers-button'); // Добавлено
-    const monetkaButton = document.getElementById('monetka-button'); // Добавлено
-    const gossipButton = document.getElementById('gossip-button'); // Добавлено
+    const poopButton = document.getElementById('poop-button');
+    const catchSubscribersButton = document.getElementById('catch-subscribers-button');
+    const monetkaButton = document.getElementById('monetka-button');
+    const gossipButton = document.getElementById('gossip-button');
     const mainMenu = document.getElementById('main-menu');
     const gameScreen = document.getElementById('game-screen');
     const continueButton = document.getElementById('continue-button');
@@ -708,13 +502,14 @@
     const fartSoundsPlayer = document.getElementById('fart-sounds');
     const streamSfxPlayer = document.getElementById('stream-sfx-player');
     
+    // --- GAME CONSTANTS ---
     const originalSprite = "https://100biografiy.ru/wp-content/uploads/2024/07/channels4_profile-2.jpg";
     const streamSprite = "https://zaebizwear.com/pidor/stream.jpg"; 
     const fartSounds = ['https://www.myinstants.com/media/sounds/fart-meme-sound.mp3', 'https://www.myinstants.com/media/sounds/rec_10s_neLGvAd.mp3', 'https://www.myinstants.com/media/sounds/fooz.mp3', 'https://www.myinstants.com/media/sounds/09037.mp3'];
     const streamSounds = ["https://zaebizwear.com/pidor/video_2025-06-19_18-44-48.mp3", "https://zaebizwear.com/pidor/video_2025-06-19_18-45-46.mp3", "https://zaebizwear.com/pidor/video_2025-06-19_18-54-53%20(online-audio-converter.com).mp3"];
     const screamerSound = "https://www.myinstants.com/media/sounds/hl2-stalker-scream.mp3";
     const SUITOR_PHOTOS = { sergey: 'https://zaebizwear.com/pidor/gay.jpg', ivan: 'https://zaebizwear.com/pidor/smile.jpg', grigoriy: 'https://www.meme-arsenal.com/memes/299e198aa1e19319430c7654f15996c0.jpg', shrek: 'https://zaebizwear.com/pidor/shrek.jpg' };
-    const actions = { cook: { time: 1, energy: -10, mood: 0, hunger: 50 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 }, watch_tv: { time: 2, energy: -5, mood: 10, hunger: -5 }, monetka: { time: 2, energy: -20, mood: 0, hunger: -5 }, gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -15, mood: 25, hunger: -5 }, stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }, call_sergey: { time: 3, energy: -10, mood: -20 }, poop: { time: 1, energy: -5, mood: 5 }, fart: { energy: -1, mood: 3 }, suitors: { time: 2, energy: -10 }, catch_subscribers: { time: 2, energy: -15, mood: 10, products: 1 } }; // Добавлено новое действие
+    const actions = { cook: { time: 1, energy: -10, mood: 0, hunger: 50 }, sleep: { time: 8, energy: 100, mood: 10, hunger: -20 }, watch_tv: { time: 2, energy: -5, mood: 10, hunger: -5 }, monetka: { time: 2, energy: -20, mood: 0, hunger: -5 }, gossip: { time: 1, energy: -5, mood: 15, hunger: -5 }, tiktok: { time: 1, energy: -15, mood: 25, hunger: -5 }, stream: { time: 3, energy: -20, mood: 30, hunger: -10, money: 1000 }, call_sergey: { time: 3, energy: -10, mood: -20 }, poop: { time: 1, energy: -5, mood: 5 }, fart: { energy: -1, mood: 3 }, suitors: { time: 2, energy: -10 }, catch_subscribers: { time: 2, energy: -15, mood: 10, products: 1 } };
 
     function getNewGameState() {
         return {
@@ -722,25 +517,23 @@
             stats: { energy: 100, mood: 70, hunger: 80, money: 5000, poop: 0 },
             products: 0, fartsToday: 0, suitorCooldown: 0, child: null, suitor: null, lastStreamDay: -2, 
             isAsleep: false, gameOver: false,
-            techState: { tv: 'ok', tiktok: 'ok', stream: 'ok', internet: 'ok', fridge: 'ok', washing_machine: 'ok', toilet: 'ok', toilet_clogged: false, toilet_available_day: -1 }, // Changed toilet_repair_day to toilet_available_day
+            techState: { tv: 'ok', tiktok: 'ok', stream: 'ok', internet: 'ok', fridge: 'ok', washing_machine: 'ok', toilet: 'ok', toilet_clogged: false, toilet_available_day: -1 },
             nextBreakdownDay: Math.floor(Math.random() * 2) + 2,
-            toiletClogDays: getRandomToiletClogDays(), // Дни засора туалета
-            lastCatchSubscribersWeek: -1, // Неделя последнего отлова подрищиков
+            toiletClogDays: getRandomToiletClogDays(),
+            lastCatchSubscribersWeek: -1,
         };
     }
 
-    // Функция для генерации двух случайных дней засора туалета до 60-го дня
     function getRandomToiletClogDays() {
         const days = [];
         while (days.length < 2) {
-            const day = Math.floor(Math.random() * 59) + 1; // День от 1 до 59
+            const day = Math.floor(Math.random() * 59) + 1;
             if (!days.includes(day)) {
                 days.push(day);
             }
         }
         return days.sort((a, b) => a - b);
     }
-
 
     function manualSave() {
         if (gameState.gameOver) { addMessage("Мёртвые не сохраняются... 💀"); return; }
@@ -753,14 +546,13 @@
         if (savedGame) {
             try {
                 gameState = JSON.parse(savedGame);
-                // Инициализация новых полей, если их нет в старом сохранении
+                // --- Safe-guarding for older save files ---
                 if (gameState.stats.poop === undefined) gameState.stats.poop = 0;
                 if (gameState.fartsToday === undefined) gameState.fartsToday = 0;
                 if (gameState.child === undefined) gameState.child = null;
                 if (gameState.suitorCooldown === undefined) gameState.suitorCooldown = 0;
                 if (gameState.suitor === undefined) gameState.suitor = null;
-                if (gameState.techState === undefined) gameState.techState = { tv: 'ok', tiktok: 'ok', stream: 'ok' };
-                // Добавление новых тех. состояний, если они отсутствуют
+                if (gameState.techState === undefined) gameState.techState = { tv: 'ok', tiktok: 'ok', stream: 'ok', internet: 'ok', fridge: 'ok', washing_machine: 'ok', toilet: 'ok', toilet_clogged: false, toilet_available_day: -1 };
                 if (gameState.techState.internet === undefined) gameState.techState.internet = 'ok';
                 if (gameState.techState.fridge === undefined) gameState.techState.fridge = 'ok';
                 if (gameState.techState.washing_machine === undefined) gameState.techState.washing_machine = 'ok';
@@ -769,7 +561,6 @@
                 if (gameState.techState.toilet_available_day === undefined) gameState.techState.toilet_available_day = -1;
                 if (gameState.toiletClogDays === undefined) gameState.toiletClogDays = getRandomToiletClogDays();
                 if (gameState.lastCatchSubscribersWeek === undefined) gameState.lastCatchSubscribersWeek = -1;
-
 
                 gameState.isAsleep = false; 
                 gameState.gameOver = false; 
@@ -798,31 +589,27 @@
     }
 
     function showMainMenu() {
-        mainMenu.style.display = 'flex';
-        gameScreen.style.display = 'none';
+        mainMenu.classList.remove('hidden');
+        gameScreen.classList.add('hidden');
         gameOverModal.classList.add('hidden');
         gameWinModal.classList.add('hidden');
         suitorModal.classList.add('hidden');
 
-        if (!localStorage.getItem('babkaNinaSave')) {
-            continueButton.style.display = 'none';
-        } else {
-            continueButton.style.display = 'inline-block';
-        }
-        if (!localStorage.getItem('babkaGameWon')) {
-            hardModeButton.disabled = true;
-            hardModeButton.classList.add('bg-gray-500', 'cursor-not-allowed');
-            hardModeButton.classList.remove('bg-purple-700', 'hover:bg-purple-800');
-        } else {
-            hardModeButton.disabled = false;
-            hardModeButton.classList.remove('bg-gray-500', 'cursor-not-allowed');
-            hardModeButton.classList.add('bg-purple-700', 'hover:bg-purple-800');
-        }
+        // FIX: Using classList.toggle for the continue button visibility
+        const hasSave = localStorage.getItem('babkaNinaSave') !== null;
+        continueButton.classList.toggle('hidden', !hasSave);
+
+        const gameWon = localStorage.getItem('babkaGameWon') === 'true';
+        hardModeButton.disabled = !gameWon;
+        hardModeButton.classList.toggle('bg-gray-500', !gameWon);
+        hardModeButton.classList.toggle('cursor-not-allowed', !gameWon);
+        hardModeButton.classList.toggle('bg-purple-700', gameWon);
+        hardModeButton.classList.toggle('hover:bg-purple-800', gameWon);
     }
 
     function showGameScreen() {
-        mainMenu.style.display = 'none';
-        gameScreen.style.display = 'flex';
+        mainMenu.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
     }
 
     function returnToMenu() {
@@ -843,9 +630,6 @@
     }
 
     function forceRestart() {
-        gameOverModal.classList.add('hidden');
-        gameWinModal.classList.add('hidden');
-        suitorModal.classList.add('hidden');
         initGame(false, gameState.gameMode || 'normal');
         addMessage("ИГРА НАЧАТА ЗАНОВА ПО ТРЕБОВАНИЯМ ТРУДЯЩИХСЯ! ✊✊");
     }
@@ -868,29 +652,20 @@
         poopVal.textContent = Math.round(gameState.stats.poop);
         productsCount.textContent = `${gameState.products} шт.`;
         
-        // Обновление состояния кнопки "Позвать Серёгу"
-        // Кнопка активна, если есть хоть что-то сломанное, включая туалет
         sergeyButton.disabled = !Object.values(gameState.techState).some(s => s === 'broken' || s === true);
-
-        // Обновление состояния кнопки "ПОСРАТЬ"
         poopButton.disabled = gameState.techState.toilet_clogged;
-
-        // Обновление состояния кнопки "Отлов подрищиков на котлетки"
+        
         const currentWeek = Math.floor(gameState.day / 7);
-        // Доступно, если денег < 1000 И не использовано на этой неделе
         catchSubscribersButton.disabled = !(gameState.stats.money < 1000 && currentWeek !== gameState.lastCatchSubscribersWeek);
         
         suitorButton.disabled = gameState.day < gameState.suitorCooldown || gameState.suitor !== null;
 
-        // Обновление отображения фото жениха
         if (gameState.suitor) {
             suitorPhotoContainer.innerHTML = `<img src="${gameState.suitor.photo}" alt="${gameState.suitor.name}">`;
             suitorPhotoContainer.classList.remove('hidden');
-            // ninaSprite.classList.add('with-suitor'); /* Add class for positioning if needed */ // Not needed with direct flex order
         } else {
             suitorPhotoContainer.innerHTML = '';
             suitorPhotoContainer.classList.add('hidden');
-            // ninaSprite.classList.remove('with-suitor'); /* Remove class */ // Not needed with direct flex order
         }
     }
     
@@ -912,10 +687,9 @@
                 gameState.day++;
                 gameState.fartsToday = 0;
                 
-                // Проверка починки туалета Олегом
                 if (gameState.techState.toilet_clogged && gameState.day === gameState.techState.toilet_available_day) { 
                     gameState.techState.toilet_clogged = false;
-                    gameState.techState.toilet_available_day = -1; // Сброс дня ремонта
+                    gameState.techState.toilet_available_day = -1;
                     addMessage(getRandomPhrase('toilet_fixed'));
                 }
 
@@ -959,14 +733,12 @@
                     addMessage(`ПЕНСИЯ ПРИШЛААА! +${GAME_PARAMS.pensionAmount} лавэ. ГУЛЯЕМ РВАНИНА!!! 🤑🤑🤑`);
                 }
                 
-                // Проверка на засор туалета
                 if (gameState.toiletClogDays.includes(gameState.day) && !gameState.techState.toilet_clogged && gameState.day <= 60) {
                     gameState.techState.toilet_clogged = true;
-                    gameState.techState.toilet_available_day = gameState.day + 1; // Будет доступен завтра
+                    gameState.techState.toilet_available_day = gameState.day + 1;
                     addMessage(getRandomPhrase('toilet_clogged'));
                 }
 
-                // Проверка других поломок
                 if (gameState.day >= gameState.nextBreakdownDay) {
                     const tech = ['tv', 'tiktok', 'stream', 'internet', 'fridge', 'washing_machine']; 
                     const brokenTech = tech[Math.floor(Math.random() * tech.length)];
@@ -988,7 +760,6 @@
         }
         const action = actions[actionKey];
 
-        // Проверка туалета перед действием "poop"
         if (actionKey === 'poop' && gameState.techState.toilet_clogged) {
             addMessage(getRandomPhrase('toilet_clogged'));
             return;
@@ -1007,22 +778,20 @@
         if (actionKey === 'stream' && gameState.techState.stream === 'broken') {
             addMessage(PHRASES.tech_broken.stream + ' НАДА ЗВАТЬ СЕРЁГУ!!! 📞🤬'); return;
         }
-        // Проверка для новых поломок
         if (actionKey === 'monetka' && gameState.techState.fridge === 'broken' && gameState.products === 0) {
             addMessage(PHRASES.tech_broken.fridge + ' И КУДА Я ЭТО ТЕПЕРЬ ПОЛОЖУ?!! 🤦‍♀️'); return;
         }
         if (actionKey === 'cook' && gameState.techState.fridge === 'broken' && gameState.products > 0) {
             addMessage(PHRASES.tech_broken.fridge + ' Продукты испортились! 🤢'); 
-            gameState.products = 0; // Все продукты портятся
+            gameState.products = 0;
             return;
         }
         if (actionKey === 'gossip' && gameState.techState.internet === 'broken') {
             addMessage(PHRASES.tech_broken.internet + ' НЕ МОГУ ЗАЙТИ В ОДНОКЛАССНИКИ! 😭'); return;
         }
-        // catch_subscribers specific logic
         if (actionKey === 'catch_subscribers') {
             const currentWeek = Math.floor(gameState.day / 7);
-            if (gameState.stats.money >= 1000) { // Условие: денег меньше тысячи
+            if (gameState.stats.money >= 1000) {
                 addMessage("ДЕНЬГИ ЕСТЬ! ИДИ В МАГАЗИН, НЕ ПОЗОРЬСЯ! 😠💸");
                 return;
             }
@@ -1034,7 +803,6 @@
             gameState.products += 1;
             addMessage(getRandomPhrase('catch_subscribers'));
         }
-
 
         switch(actionKey) {
             case 'sleep':
@@ -1074,7 +842,6 @@
                 let repairCost = 0;
                 let fixedSomething = false;
 
-                // Fix other broken tech immediately
                 for (const techKey in gameState.techState) {
                     if (techKey !== 'toilet_clogged' && techKey !== 'toilet_available_day' && gameState.techState[techKey] === 'broken') {
                         repairCost += Math.floor(Math.random() * 500) + 200;
@@ -1083,13 +850,11 @@
                     }
                 }
 
-                // Handle clogged toilet: initiates repair, but becomes available next day
                 if (gameState.techState.toilet_clogged === true) {
-                    repairCost += Math.floor(Math.random() * 300) + 100; // Cost for toilet repair
-                    // toilet_clogged remains true for the rest of current day
-                    gameState.techState.toilet_available_day = gameState.day + 1; // Will be available tomorrow
-                    addMessage(getRandomPhrase('toilet_repair')); // Oleg starts fixing
-                    fixedSomething = true; // Mark that something was fixed
+                    repairCost += Math.floor(Math.random() * 300) + 100;
+                    gameState.techState.toilet_available_day = gameState.day + 1;
+                    addMessage(getRandomPhrase('toilet_repair'));
+                    fixedSomething = true;
                 }
 
                 if (!fixedSomething) { addMessage("ВСЁ И ТАК РАБОТАЕТ, ЧЕГО ЗВОНИШЬ?! 🤨"); return; }
@@ -1097,9 +862,7 @@
                 
                 gameState.stats.money -= repairCost;
                 
-                if (gameState.techState.toilet_clogged && !Object.values(gameState.techState).filter(s => s === 'broken').length) { // Only toilet was broken
-                    addMessage(`Серёга занялся туалетом (-${repairCost} руб.💰). Будет готов завтра!`);
-                } else if (fixedSomething) { // Other things fixed too
+                if (fixedSomething) {
                     addMessage(`${getRandomPhrase(actionKey)} (-${repairCost} руб.💰). Всё работает, по крайней мере пока. 🛠️`);
                 }
                 break;
@@ -1113,21 +876,21 @@
                 playSound(fartSounds[Math.floor(Math.random() * fartSounds.length)], fartSoundsPlayer);
                 break;
             case 'suitors':
-                suitorModal.classList.remove('hidden');
+                suitorModal.classList.remove('hidden'); // This should now work reliably
                 return;
         }
 
-        if (!['monetka', 'call_sergey', 'catch_subscribers', 'poop'].includes(actionKey)) { addMessage(getRandomPhrase(actionKey)); } // Избегаем дублирования сообщений
+        if (!['monetka', 'call_sergey', 'catch_subscribers', 'poop'].includes(actionKey)) { addMessage(getRandomPhrase(actionKey)); }
         if (action.money) gameState.stats.money += action.money;
         if (action.energy) gameState.stats.energy += action.energy;
         if (action.mood) gameState.stats.mood += action.mood;
-        if (action.hasOwnProperty('products')) { gameState.products += action.products; } // Добавлена обработка продуктов
+        if (action.hasOwnProperty('products')) { gameState.products += action.products; }
         if (action.hasOwnProperty('hunger')) { gameState.stats.hunger += action.hunger; }
         if (action.time) { advanceTime(action.time); } else { updateUI(); }
     }
 
     function selectSuitor(suitorName) {
-        suitorModal.classList.add('hidden');
+        suitorModal.classList.add('hidden'); // Hide after selection
         addMessage(`выбрала мужика... ${suitorName}... посмотрим чо будит... 👀`);
         gameState.stats.mood = 100;
         gameState.suitorCooldown = gameState.day + 7;
@@ -1153,7 +916,6 @@
     }
     
     function triggerRandomEvent() {
-        // Пока оставим только событие с Серёгой и ЖКХ
         const roll = Math.random();
         if (roll < 0.5) { 
             document.getElementById('game-container').classList.add('shake-animation');
@@ -1186,7 +948,7 @@
             else if (gameState.stats.money <= 0 && gameState.products <= 0) reasonKey = "money"; 
             else if (gameState.child && gameState.child.daysLeft <= 0 && gameState.products === 0) reasonKey = "child"; 
             else if (gameState.suitor && gameState.suitor.daysLeft <= 0 && gameState.suitor.type === 'leech' && gameState.stats.money <= 0) reasonKey = "suitor";
-            else if (gameState.techState.toilet_clogged && gameState.stats.poop >= 100) reasonKey = "toilet"; // Game Over от засора, если не починили
+            else if (gameState.techState.toilet_clogged && gameState.stats.poop >= 100) reasonKey = "toilet";
         }
         if (reasonKey) {
             gameState.gameOver = true;
@@ -1213,7 +975,7 @@
 
     function playSound(src, player = sfxPlayer) {
         player.src = src;
-        player.play().catch(e => console.error("Ошибка воспроизведения звука:", e));
+        player.play().catch(e => console.warn("Ошибка воспроизведения звука:", e));
     }
     
     function triggerScreamer() {
@@ -1228,7 +990,7 @@
     }
     
     function afkGameOver() {
-        if (gameState.gameOver || !screamerModal.classList.contains('hidden')) return;
+        if (gameState.gameOver || !mainMenu.classList.contains('hidden')) return;
         gameState.gameOver = true;
         clearTimeout(inactivityTimer);
         playSound(screamerSound);
@@ -1265,23 +1027,7 @@
         });
     }
 
-    // Optional: Request fullscreen on first interaction for PWA-like experience
-    document.addEventListener('DOMContentLoaded', () => {
-        const appContainer = document.getElementById('app-container');
-        if (appContainer && document.fullscreenEnabled) {
-            const startGameButtons = document.querySelectorAll('#main-menu button');
-            startGameButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (!document.fullscreenElement) {
-                        appContainer.requestFullscreen().catch(err => {
-                            console.error(`Ошибка при попытке перейти в полноэкранный режим: ${err.message}`);
-                        });
-                    }
-                }, { once: true }); 
-            });
-        }
-    });
-
+    // REMOVED: Fullscreen request on game start
 </script>
 
 </body>
